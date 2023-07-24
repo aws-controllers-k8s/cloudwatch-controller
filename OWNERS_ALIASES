@@ -5,5 +5,5 @@ aliases:
     - a-hilaly
     - RedbackThomson
     - jljaco
-  # TODO: Add your team members' GitHub aliases to the team alias
-  service-team: []
+  service-team:
+    - jessebye
