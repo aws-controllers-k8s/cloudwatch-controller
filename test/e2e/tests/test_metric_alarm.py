@@ -69,12 +69,18 @@ def _metric_alarm():
 @pytest.mark.canary
 class TestMetricAlarm:
     def test_crud(self, _metric_alarm):
-        (ref, cr) = _metric_alarm
-        metric_alarm_name = ref.name
+        (ref1, cr1) = _metric_alarm
+        metric_alarm_name1 = ref1.name
+
+        (ref2, cr2) = _metric_alarm
+        metric_alarm_name2 = ref2.name
 
         time.sleep(CHECK_STATUS_WAIT_SECONDS)
 
-        condition.assert_synced(ref)
+        condition.assert_synced(ref1)
+        condition.assert_synced(ref2)
 
-        assert metric_alarm.exists(metric_alarm_name)
-        assert k8s.get_resource_exists(ref)
+        assert metric_alarm.exists(metric_alarm_name1)
+        assert metric_alarm.exists(metric_alarm_name2)
+        assert k8s.get_resource_exists(ref1)
+        assert k8s.get_resource_exists(ref2)
