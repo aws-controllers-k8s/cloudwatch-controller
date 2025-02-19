@@ -27,6 +27,7 @@ type MetricAlarmSpec struct {
 
 	// Indicates whether actions should be executed during any changes to the alarm
 	// state. The default is TRUE.
+
 	ActionsEnabled *bool `json:"actionsEnabled,omitempty"`
 	// The actions to execute when this alarm transitions to the ALARM state from
 	// any other state. Each action is specified as an Amazon Resource Name (ARN).
@@ -34,45 +35,47 @@ type MetricAlarmSpec struct {
 	//
 	// EC2 actions:
 	//
-	//   - arn:aws:automate:region:ec2:stop
+	//    * arn:aws:automate:region:ec2:stop
 	//
-	//   - arn:aws:automate:region:ec2:terminate
+	//    * arn:aws:automate:region:ec2:terminate
 	//
-	//   - arn:aws:automate:region:ec2:reboot
+	//    * arn:aws:automate:region:ec2:reboot
 	//
-	//   - arn:aws:automate:region:ec2:recover
+	//    * arn:aws:automate:region:ec2:recover
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
 	//
 	// Autoscaling action:
 	//
-	//   - arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
+	//    * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
 	//
 	// Lambda actions:
 	//
-	//   - Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
+	//    * Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
 	//
-	//   - Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
+	//    * Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
 	//
-	//   - Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
+	//    * Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
 	//
 	// SNS notification action:
 	//
-	//   - arn:aws:sns:region:account-id:sns-topic-name
+	//    * arn:aws:sns:region:account-id:sns-topic-name
 	//
 	// SSM integration actions:
 	//
-	//   - arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
+	//    * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
 	//
-	//   - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+	//    * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+
 	AlarmActions []*string `json:"alarmActions,omitempty"`
 	// The description for the alarm.
+
 	AlarmDescription *string `json:"alarmDescription,omitempty"`
 	// The arithmetic operation to use when comparing the specified statistic and
 	// threshold. The specified statistic value is used as the first operand.
@@ -80,14 +83,18 @@ type MetricAlarmSpec struct {
 	// The values LessThanLowerOrGreaterThanUpperThreshold, LessThanLowerThreshold,
 	// and GreaterThanUpperThreshold are used only for alarms based on anomaly detection
 	// models.
+
 	// +kubebuilder:validation:Required
+
 	ComparisonOperator *string `json:"comparisonOperator"`
 	// The number of data points that must be breaching to trigger the alarm. This
 	// is used only if you are setting an "M out of N" alarm. In that case, this
 	// value is the M. For more information, see Evaluating an Alarm (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarm-evaluation)
 	// in the Amazon CloudWatch User Guide.
+
 	DatapointsToAlarm *int64 `json:"datapointsToAlarm,omitempty"`
 	// The dimensions for the metric specified in MetricName.
+
 	Dimensions []*Dimension `json:"dimensions,omitempty"`
 	// Used only for alarms based on percentiles. If you specify ignore, the alarm
 	// state does not change during periods with too few data points to be statistically
@@ -97,6 +104,7 @@ type MetricAlarmSpec struct {
 	// and Low Data Samples (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#percentiles-with-low-samples).
 	//
 	// Valid Values: evaluate | ignore
+
 	EvaluateLowSampleCountPercentile *string `json:"evaluateLowSampleCountPercentile,omitempty"`
 	// The number of periods over which data is compared to the specified threshold.
 	// If you are setting an alarm that requires that a number of consecutive data
@@ -105,7 +113,9 @@ type MetricAlarmSpec struct {
 	//
 	// An alarm's total current evaluation period can be no longer than one day,
 	// so this number multiplied by Period cannot be more than 86,400 seconds.
+
 	// +kubebuilder:validation:Required
+
 	EvaluationPeriods *int64 `json:"evaluationPeriods"`
 	// The extended statistic for the metric specified in MetricName. When you call
 	// PutMetricAlarm and specify a MetricName, you must specify either Statistic
@@ -113,30 +123,31 @@ type MetricAlarmSpec struct {
 	//
 	// If you specify ExtendedStatistic, the following are valid values:
 	//
-	//   - p90
+	//    * p90
 	//
-	//   - tm90
+	//    * tm90
 	//
-	//   - tc90
+	//    * tc90
 	//
-	//   - ts90
+	//    * ts90
 	//
-	//   - wm90
+	//    * wm90
 	//
-	//   - IQM
+	//    * IQM
 	//
-	//   - PR(n:m) where n and m are values of the metric
+	//    * PR(n:m) where n and m are values of the metric
 	//
-	//   - TC(X%:X%) where X is between 10 and 90 inclusive.
+	//    * TC(X%:X%) where X is between 10 and 90 inclusive.
 	//
-	//   - TM(X%:X%) where X is between 10 and 90 inclusive.
+	//    * TM(X%:X%) where X is between 10 and 90 inclusive.
 	//
-	//   - TS(X%:X%) where X is between 10 and 90 inclusive.
+	//    * TS(X%:X%) where X is between 10 and 90 inclusive.
 	//
-	//   - WM(X%:X%) where X is between 10 and 90 inclusive.
+	//    * WM(X%:X%) where X is between 10 and 90 inclusive.
 	//
 	// For more information about these extended statistics, see CloudWatch statistics
 	// definitions (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html).
+
 	ExtendedStatistic *string `json:"extendedStatistic,omitempty"`
 	// The actions to execute when this alarm transitions to the INSUFFICIENT_DATA
 	// state from any other state. Each action is specified as an Amazon Resource
@@ -144,43 +155,44 @@ type MetricAlarmSpec struct {
 	//
 	// EC2 actions:
 	//
-	//   - arn:aws:automate:region:ec2:stop
+	//    * arn:aws:automate:region:ec2:stop
 	//
-	//   - arn:aws:automate:region:ec2:terminate
+	//    * arn:aws:automate:region:ec2:terminate
 	//
-	//   - arn:aws:automate:region:ec2:reboot
+	//    * arn:aws:automate:region:ec2:reboot
 	//
-	//   - arn:aws:automate:region:ec2:recover
+	//    * arn:aws:automate:region:ec2:recover
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
 	//
 	// Autoscaling action:
 	//
-	//   - arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
+	//    * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
 	//
 	// Lambda actions:
 	//
-	//   - Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
+	//    * Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
 	//
-	//   - Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
+	//    * Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
 	//
-	//   - Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
+	//    * Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
 	//
 	// SNS notification action:
 	//
-	//   - arn:aws:sns:region:account-id:sns-topic-name
+	//    * arn:aws:sns:region:account-id:sns-topic-name
 	//
 	// SSM integration actions:
 	//
-	//   - arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
+	//    * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
 	//
-	//   - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+	//    * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+
 	InsufficientDataActions []*string `json:"insufficientDataActions,omitempty"`
 	// The name for the metric associated with the alarm. For each PutMetricAlarm
 	// operation, you must specify either MetricName or a Metrics array.
@@ -189,6 +201,7 @@ type MetricAlarmSpec struct {
 	// this parameter, or any of the Namespace, Dimensions, Period, Unit, Statistic,
 	// or ExtendedStatistic parameters. Instead, you specify all this information
 	// in the Metrics array.
+
 	MetricName *string `json:"metricName,omitempty"`
 	// An array of MetricDataQuery structures that enable you to create an alarm
 	// based on the result of a metric math expression. For each PutMetricAlarm
@@ -205,14 +218,18 @@ type MetricAlarmSpec struct {
 	// Dimensions, Period, Unit, Statistic, or ExtendedStatistic parameters of PutMetricAlarm
 	// in the same operation. Instead, you retrieve the metrics you are using in
 	// your math expression as part of the Metrics array.
+
 	Metrics []*MetricDataQuery `json:"metrics,omitempty"`
 	// The name for the alarm. This name must be unique within the Region.
 	//
 	// The name must contain only UTF-8 characters, and can't contain ASCII control
 	// characters
+
 	// +kubebuilder:validation:Required
+
 	Name *string `json:"name"`
 	// The namespace for the metric associated specified in MetricName.
+
 	Namespace *string `json:"namespace,omitempty"`
 	// The actions to execute when this alarm transitions to an OK state from any
 	// other state. Each action is specified as an Amazon Resource Name (ARN). Valid
@@ -220,43 +237,44 @@ type MetricAlarmSpec struct {
 	//
 	// EC2 actions:
 	//
-	//   - arn:aws:automate:region:ec2:stop
+	//    * arn:aws:automate:region:ec2:stop
 	//
-	//   - arn:aws:automate:region:ec2:terminate
+	//    * arn:aws:automate:region:ec2:terminate
 	//
-	//   - arn:aws:automate:region:ec2:reboot
+	//    * arn:aws:automate:region:ec2:reboot
 	//
-	//   - arn:aws:automate:region:ec2:recover
+	//    * arn:aws:automate:region:ec2:recover
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
 	//
-	//   - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
+	//    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
 	//
 	// Autoscaling action:
 	//
-	//   - arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
+	//    * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
 	//
 	// Lambda actions:
 	//
-	//   - Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
+	//    * Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
 	//
-	//   - Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
+	//    * Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
 	//
-	//   - Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
+	//    * Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
 	//
 	// SNS notification action:
 	//
-	//   - arn:aws:sns:region:account-id:sns-topic-name
+	//    * arn:aws:sns:region:account-id:sns-topic-name
 	//
 	// SSM integration actions:
 	//
-	//   - arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
+	//    * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
 	//
-	//   - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+	//    * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+
 	OKActions []*string `json:"oKActions,omitempty"`
 	// The length, in seconds, used each time the metric specified in MetricName
 	// is evaluated. Valid values are 10, 30, and any multiple of 60.
@@ -277,11 +295,13 @@ type MetricAlarmSpec struct {
 	//
 	// An alarm's total current evaluation period can be no longer than one day,
 	// so Period multiplied by EvaluationPeriods cannot be more than 86,400 seconds.
+
 	Period *int64 `json:"period,omitempty"`
 	// The statistic for the metric specified in MetricName, other than percentile.
 	// For percentile statistics, use ExtendedStatistic. When you call PutMetricAlarm
 	// and specify a MetricName, you must specify either Statistic or ExtendedStatistic,
 	// but not both.
+
 	Statistic *string `json:"statistic,omitempty"`
 	// A list of key-value pairs to associate with the alarm. You can associate
 	// as many as 50 tags with an alarm. To be able to associate tags with the alarm
@@ -299,11 +319,13 @@ type MetricAlarmSpec struct {
 	// To use this field to set tags for an alarm when you create it, you must be
 	// signed on with both the cloudwatch:PutMetricAlarm and cloudwatch:TagResource
 	// permissions.
+
 	Tags []*Tag `json:"tags,omitempty"`
 	// The value against which the specified statistic is compared.
 	//
 	// This parameter is required for alarms based on static thresholds, but should
 	// not be used for alarms based on anomaly detection models.
+
 	Threshold *float64 `json:"threshold,omitempty"`
 	// If this is an alarm based on an anomaly detection model, make this value
 	// match the ID of the ANOMALY_DETECTION_BAND function.
@@ -312,6 +334,7 @@ type MetricAlarmSpec struct {
 	// Alarm example on this page.
 	//
 	// If your alarm uses this parameter, it cannot have Auto Scaling actions.
+
 	ThresholdMetricID *string `json:"thresholdMetricID,omitempty"`
 	// Sets how this alarm is to handle missing data points. If TreatMissingData
 	// is omitted, the default behavior of missing is used. For more information,
@@ -323,6 +346,7 @@ type MetricAlarmSpec struct {
 	// missing data even if you choose a different option for TreatMissingData.
 	// When an AWS/DynamoDB metric has missing data, alarms that evaluate that metric
 	// remain in their current state.
+
 	TreatMissingData *string `json:"treatMissingData,omitempty"`
 	// The unit of measure for the statistic. For example, the units for the Amazon
 	// EC2 NetworkIn metric are Bytes because NetworkIn tracks the number of bytes
@@ -344,6 +368,7 @@ type MetricAlarmSpec struct {
 	// We recommend omitting Unit so that you don't inadvertently specify an incorrect
 	// unit that is not published for this metric. Doing so causes the alarm to
 	// be stuck in the INSUFFICIENT DATA state.
+
 	Unit *string `json:"unit,omitempty"`
 }
 
@@ -354,7 +379,7 @@ type MetricAlarmStatus struct {
 	// constructed ARN for the resource
 	// +kubebuilder:validation:Optional
 	ACKResourceMetadata *ackv1alpha1.ResourceMetadata `json:"ackResourceMetadata"`
-	// All CRS managed by ACK have a common `Status.Conditions` member that
+	// All CRs managed by ACK have a common `Status.Conditions` member that
 	// contains a collection of `ackv1alpha1.Condition` objects that describe
 	// the various terminal states of the CR and its backend AWS service API
 	// resource
