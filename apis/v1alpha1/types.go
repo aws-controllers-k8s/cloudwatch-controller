@@ -71,6 +71,20 @@ type CompositeAlarm struct {
 	StateValue                         *string      `json:"stateValue,omitempty"`
 }
 
+// Represents a specific dashboard.
+type DashboardEntry struct {
+	DashboardARN  *string      `json:"dashboardARN,omitempty"`
+	DashboardName *string      `json:"dashboardName,omitempty"`
+	LastModified  *metav1.Time `json:"lastModified,omitempty"`
+	Size          *int64       `json:"size,omitempty"`
+}
+
+// An error or warning for the operation.
+type DashboardValidationMessage struct {
+	DataPath *string `json:"dataPath,omitempty"`
+	Message  *string `json:"message,omitempty"`
+}
+
 // Encapsulates the statistical data that CloudWatch computes from metric data.
 type Datapoint struct {
 	Timestamp *metav1.Time `json:"timestamp,omitempty"`

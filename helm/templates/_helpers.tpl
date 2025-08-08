@@ -72,6 +72,7 @@ rules:
 - apiGroups:
   - cloudwatch.services.k8s.aws
   resources:
+  - dashboards
   - metricalarms
   verbs:
   - create
@@ -84,6 +85,7 @@ rules:
 - apiGroups:
   - cloudwatch.services.k8s.aws
   resources:
+  - dashboards/status
   - metricalarms/status
   verbs:
   - get
