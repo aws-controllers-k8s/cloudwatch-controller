@@ -37,3 +37,34 @@ resources:
         template_path: hooks/metricalarm/sdk_read_many_post_build_request.go.tpl
       sdk_delete_post_build_request:
         template_path: hooks/metricalarm/sdk_delete_post_build_request.go.tpl
+  RepositoryCreationTemplate:
+    fields:
+      templateName:
+        is_primary_key: true
+        is_required: true
+        is_immutable: true
+      templateArn:
+        is_read_only: true
+      createdTime:
+        is_read_only: true
+      lastModifiedTime:
+        is_read_only: true
+      sourceConfiguration.sourceRepositoryArn:
+        references:
+          resource: Repository
+          path: Status.ACKResourceMetadata.ARN
+    exceptions:
+      errors:
+        404:
+          code: ResourceNotFoundException
+      terminal_codes:
+        - ResourceAlreadyExistsException
+        - ValidationException
+        - AccessDeniedException
+    hooks:
+      sdk_create_post_set_output:
+        template_path: hooks/repository_creation_template/sdk_create_post_set_output.go.tpl
+      sdk_update_pre_build_request:
+        template_path: hooks/repository_creation_template/sdk_update_pre_build_request.go.tpl
+      sdk_read_one_post_set_output:
+        template_path: hooks/repository_creation_template/sdk_read_one_post_set_output.go.tpl
