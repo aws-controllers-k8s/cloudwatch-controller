@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - common
   - bases/cloudwatch.services.k8s.aws_metricalarms.yaml
+  - bases/cloudwatch.services.k8s.aws_metricstreams.yaml

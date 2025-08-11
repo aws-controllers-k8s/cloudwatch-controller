@@ -4,7 +4,7 @@ ignore:
     - CompositeAlarm
     - InsightRule
     - ManagedInsightRule
-    - MetricStream
+    # - MetricStream
 model_name: monitoring
 operations:
   DeleteAlarms:
@@ -21,6 +21,11 @@ operations:
     - Create
     - Update
     resource_name: MetricAlarm
+  PutMetricStream:
+    operation_type:
+    - Create
+    - Update
+    resource_name: MetricStream
 resources:
   MetricAlarm:
     fields:

@@ -13,17 +13,39 @@
 """Bootstraps the resources required to run the CloudWatch integration tests.
 """
 import logging
+import json
 
 from acktest.bootstrapping import Resources, BootstrapFailureException
-
 from e2e import bootstrap_directory
 from e2e.bootstrap_resources import BootstrapResources
+from acktest.bootstrapping.iam import Role, UserPolicies
+from acktest.bootstrapping.firehose import DeliveryStream
 
 def service_bootstrap() -> Resources:
     logging.getLogger().setLevel(logging.INFO)
+    metric_stream_policy_doc = {
+        "Version": "2012-10-17",
+        "Statement": [{
+            "Effect": "Allow",
+            "Action": ["firehose:PutRecord", "firehose:PutRecordBatch"],
+            "Resource": "*"
+        }]
+    }
 
     resources = BootstrapResources(
-        # TODO: Add bootstrapping when you have defined the resources
+        MetricStreamRole=Role(
+            name_prefix="cloudwatch-metric-stream-role",
+            principal_service="streams.metrics.cloudwatch.amazonaws.com",
+            description="Role for CloudWatch Metric Stream",
+            user_policies=UserPolicies(
+                name_prefix="metric-stream-firehose-policy",
+                policy_documents=[json.dumps(metric_stream_policy_doc)]
+            )
+        ),
+        DeliveryStream=DeliveryStream(
+            name_prefix="cloudwatch-metric-stream",
+            s3_bucket_prefix="ack-test-cw-metrics"
+        )
     )
 
     try:

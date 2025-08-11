@@ -17,6 +17,7 @@ rules:
   - cloudwatch.services.k8s.aws
   resources:
   - metricalarms
+  - metricstreams
   verbs:
   - get
   - list

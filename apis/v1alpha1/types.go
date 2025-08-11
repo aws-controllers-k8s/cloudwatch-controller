@@ -115,7 +115,14 @@ type InsightRuleMetricDatapoint struct {
 // Contains the information that's required to enable a managed Contributor
 // Insights rule for an Amazon Web Services resource.
 type ManagedRule struct {
-	Tags []*Tag `json:"tags,omitempty"`
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	Tags        []*Tag  `json:"tags,omitempty"`
+}
+
+// Contains information about managed Contributor Insights rules, as returned
+// by ListManagedInsightRules.
+type ManagedRuleDescription struct {
+	ResourceARN *string `json:"resourceARN,omitempty"`
 }
 
 // Represents a specific metric.
@@ -231,8 +238,13 @@ type MetricStat struct {
 
 // This structure contains the configuration information about one metric stream.
 type MetricStreamEntry struct {
+	ARN            *string      `json:"arn,omitempty"`
 	CreationDate   *metav1.Time `json:"creationDate,omitempty"`
+	FirehoseARN    *string      `json:"firehoseARN,omitempty"`
 	LastUpdateDate *metav1.Time `json:"lastUpdateDate,omitempty"`
+	Name           *string      `json:"name,omitempty"`
+	OutputFormat   *string      `json:"outputFormat,omitempty"`
+	State          *string      `json:"state,omitempty"`
 }
 
 // This structure contains a metric namespace and optionally, a list of metric
@@ -243,7 +255,18 @@ type MetricStreamEntry struct {
 // example, this could include 10 metric namespace filters with 99 metrics each,
 // or 20 namespace filters with 49 metrics specified in each filter.
 type MetricStreamFilter struct {
-	Namespace *string `json:"namespace,omitempty"`
+	MetricNames []*string `json:"metricNames,omitempty"`
+	Namespace   *string   `json:"namespace,omitempty"`
+}
+
+// By default, a metric stream always sends the MAX, MIN, SUM, and SAMPLECOUNT
+// statistics for each metric that is streamed. This structure contains information
+// for one metric that includes additional statistics in the stream. For more
+// information about statistics, see CloudWatch, listed in CloudWatch statistics
+// definitions (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html.html).
+type MetricStreamStatisticsConfiguration struct {
+	AdditionalStatistics []*string                       `json:"additionalStatistics,omitempty"`
+	IncludeMetrics       []*MetricStreamStatisticsMetric `json:"includeMetrics,omitempty"`
 }
 
 // This object contains the information for one metric that is to be streamed
