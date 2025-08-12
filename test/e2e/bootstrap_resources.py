@@ -17,11 +17,14 @@ for them.
 
 from dataclasses import dataclass
 from acktest.bootstrapping import Resources
+from acktest.bootstrapping.iam import Role
+from acktest.bootstrapping.firehose import DeliveryStream
 from e2e import bootstrap_directory
 
 @dataclass
 class BootstrapResources(Resources):
-    pass
+    MetricStreamRole: Role
+    DeliveryStream: DeliveryStream
 
 _bootstrap_resources = None
 

@@ -14,5 +14,10 @@
 CloudWatch-specific test variables.
 """
 
+from e2e.bootstrap_resources import get_bootstrap_resources
+
 REPLACEMENT_VALUES = {
+    "ROLE_ARN": get_bootstrap_resources().MetricStreamRole.arn,
+    "FIREHOSE_ARN": get_bootstrap_resources().DeliveryStream.arn,
+    "S3_BUCKET_NAME": get_bootstrap_resources().DeliveryStream.s3_bucket.name,
 }

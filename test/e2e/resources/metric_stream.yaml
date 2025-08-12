@@ -1,0 +1,17 @@
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: MetricStream
+metadata:
+  name: $METRIC_STREAM_NAME
+spec:
+  name: $METRIC_STREAM_NAME
+  firehoseARN: $FIREHOSE_ARN
+  roleARN: $ROLE_ARN
+  outputFormat: json
+  includeFilters:
+  - namespace: AWS/EC2
+  - namespace: AWS/RDS
+  tags:
+  - key: Environment
+    value: test
+  - key: Purpose
+    value: e2e-testing

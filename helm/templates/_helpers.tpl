@@ -73,6 +73,7 @@ rules:
   - cloudwatch.services.k8s.aws
   resources:
   - metricalarms
+  - metricstreams
   verbs:
   - create
   - delete
@@ -85,6 +86,7 @@ rules:
   - cloudwatch.services.k8s.aws
   resources:
   - metricalarms/status
+  - metricstreams/status
   verbs:
   - get
   - patch
