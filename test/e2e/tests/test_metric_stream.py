@@ -78,7 +78,7 @@ class TestMetricStream:
         (ref, cr) = _metric_stream
         metric_stream_name = ref.name
         time.sleep(CHECK_STATUS_WAIT_SECONDS)
-        condition.assert_synced(ref)
+        condition.assert_ready(ref)
 
         assert metric_stream.exists(metric_stream_name)
         
@@ -102,7 +102,7 @@ class TestMetricStream:
         assert k8s.get_resource_exists(ref)
 
         time.sleep(MODIFY_WAIT_AFTER_SECONDS)
-        condition.assert_synced(ref)
+        condition.assert_ready(ref)
 
         assert metric_stream.exists(metric_stream_name)
         

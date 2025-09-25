@@ -74,7 +74,7 @@ class TestMetricAlarm:
 
         time.sleep(CHECK_STATUS_WAIT_SECONDS)
 
-        condition.assert_synced(ref)
+        condition.assert_ready(ref)
 
         assert metric_alarm.exists(metric_alarm_name)
         assert k8s.get_resource_exists(ref)
