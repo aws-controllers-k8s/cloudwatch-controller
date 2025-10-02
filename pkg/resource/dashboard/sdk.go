@@ -79,7 +79,7 @@ func (rm *resourceManager) sdkFind(
 	rm.metrics.RecordAPICall("READ_ONE", "GetDashboard", err)
 	if err != nil {
 		var awsErr smithy.APIError
-		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundException" {
+		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFound" {
 			return nil, ackerr.NotFound
 		}
 		return nil, err
@@ -285,6 +285,8 @@ func (rm *resourceManager) sdkDelete(
 	if err != nil {
 		return nil, err
 	}
+	input.DashboardNames = []string{*r.ko.Spec.DashboardName}
+
 	var resp *svcsdk.DeleteDashboardsOutput
 	_ = resp
 	resp, err = rm.sdkapi.DeleteDashboards(ctx, input)
@@ -411,7 +413,7 @@ func (rm *resourceManager) terminalAWSError(err error) bool {
 	}
 	switch terminalErr.ErrorCode() {
 	case "InvalidParameterValueException",
-		"ResourceNotFoundException":
+		"InvalidParameterInput":
 		return true
 	default:
 		return false

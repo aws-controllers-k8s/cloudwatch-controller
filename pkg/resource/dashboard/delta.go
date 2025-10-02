@@ -42,14 +42,14 @@ func newResourceDelta(
 		delta.Add("", a, b)
 		return delta
 	}
-
 	if ackcompare.HasNilDifference(a.ko.Spec.DashboardBody, b.ko.Spec.DashboardBody) {
 		delta.Add("Spec.DashboardBody", a.ko.Spec.DashboardBody, b.ko.Spec.DashboardBody)
 	} else if a.ko.Spec.DashboardBody != nil && b.ko.Spec.DashboardBody != nil {
-		if *a.ko.Spec.DashboardBody != *b.ko.Spec.DashboardBody {
+		if !compareDashboardBody(*a.ko.Spec.DashboardBody, *b.ko.Spec.DashboardBody) {
 			delta.Add("Spec.DashboardBody", a.ko.Spec.DashboardBody, b.ko.Spec.DashboardBody)
 		}
 	}
+
 	if ackcompare.HasNilDifference(a.ko.Spec.DashboardName, b.ko.Spec.DashboardName) {
 		delta.Add("Spec.DashboardName", a.ko.Spec.DashboardName, b.ko.Spec.DashboardName)
 	} else if a.ko.Spec.DashboardName != nil && b.ko.Spec.DashboardName != nil {
