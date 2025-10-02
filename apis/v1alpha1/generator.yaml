@@ -26,6 +26,23 @@ operations:
     - Create
     - Update
     resource_name: MetricStream
+  DeleteDashboards:
+    operation_type:
+    - Delete
+    resource_name: Dashboard
+  GetDashboard:
+    operation_type:
+    - ReadOne
+    resource_name: Dashboard
+  ListDashboards:
+    operation_type:
+    - ReadMany
+    resource_name: Dashboard
+  PutDashboard:
+    operation_type:
+    - Create
+    - Update
+    resource_name: Dashboard
 resources:
   MetricAlarm:
     fields:
@@ -42,3 +59,29 @@ resources:
         template_path: hooks/metricalarm/sdk_read_many_post_build_request.go.tpl
       sdk_delete_post_build_request:
         template_path: hooks/metricalarm/sdk_delete_post_build_request.go.tpl
+  Dashboard:
+    fields:
+      DashboardName:
+        is_primary_key: true
+        is_required: true
+      DashboardBody:
+        compare:
+          is_ignored: true
+        is_required: true
+      DashboardArn:
+        is_read_only: true
+
+    hooks:
+      delta_pre_compare:
+        template_path: hooks/dashboard/delta_pre_compare.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/dashboard/sdk_delete_post_build_request.go.tpl
+    exceptions:
+      errors:
+        404:
+          code: ResourceNotFound
+      terminal_codes:
+        - InvalidParameterValueException
+        - InvalidParameterInput
+    tags:
+      ignore: true
