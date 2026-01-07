@@ -17,16 +17,15 @@ package metric_alarm
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -81,7 +80,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.Dimensions) != len(b.ko.Spec.Dimensions) {
 		delta.Add("Spec.Dimensions", a.ko.Spec.Dimensions, b.ko.Spec.Dimensions)
 	} else if len(a.ko.Spec.Dimensions) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.Dimensions, b.ko.Spec.Dimensions) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.Dimensions, b.ko.Spec.Dimensions) {
 			delta.Add("Spec.Dimensions", a.ko.Spec.Dimensions, b.ko.Spec.Dimensions)
 		}
 	}
@@ -123,7 +122,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.Metrics) != len(b.ko.Spec.Metrics) {
 		delta.Add("Spec.Metrics", a.ko.Spec.Metrics, b.ko.Spec.Metrics)
 	} else if len(a.ko.Spec.Metrics) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.Metrics, b.ko.Spec.Metrics) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.Metrics, b.ko.Spec.Metrics) {
 			delta.Add("Spec.Metrics", a.ko.Spec.Metrics, b.ko.Spec.Metrics)
 		}
 	}
