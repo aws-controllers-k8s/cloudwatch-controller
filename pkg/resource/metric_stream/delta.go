@@ -17,16 +17,15 @@ package metric_stream
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -46,7 +45,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.ExcludeFilters) != len(b.ko.Spec.ExcludeFilters) {
 		delta.Add("Spec.ExcludeFilters", a.ko.Spec.ExcludeFilters, b.ko.Spec.ExcludeFilters)
 	} else if len(a.ko.Spec.ExcludeFilters) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.ExcludeFilters, b.ko.Spec.ExcludeFilters) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.ExcludeFilters, b.ko.Spec.ExcludeFilters) {
 			delta.Add("Spec.ExcludeFilters", a.ko.Spec.ExcludeFilters, b.ko.Spec.ExcludeFilters)
 		}
 	}
@@ -60,7 +59,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.IncludeFilters) != len(b.ko.Spec.IncludeFilters) {
 		delta.Add("Spec.IncludeFilters", a.ko.Spec.IncludeFilters, b.ko.Spec.IncludeFilters)
 	} else if len(a.ko.Spec.IncludeFilters) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.IncludeFilters, b.ko.Spec.IncludeFilters) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.IncludeFilters, b.ko.Spec.IncludeFilters) {
 			delta.Add("Spec.IncludeFilters", a.ko.Spec.IncludeFilters, b.ko.Spec.IncludeFilters)
 		}
 	}
@@ -95,7 +94,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.StatisticsConfigurations) != len(b.ko.Spec.StatisticsConfigurations) {
 		delta.Add("Spec.StatisticsConfigurations", a.ko.Spec.StatisticsConfigurations, b.ko.Spec.StatisticsConfigurations)
 	} else if len(a.ko.Spec.StatisticsConfigurations) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.StatisticsConfigurations, b.ko.Spec.StatisticsConfigurations) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.StatisticsConfigurations, b.ko.Spec.StatisticsConfigurations) {
 			delta.Add("Spec.StatisticsConfigurations", a.ko.Spec.StatisticsConfigurations, b.ko.Spec.StatisticsConfigurations)
 		}
 	}
