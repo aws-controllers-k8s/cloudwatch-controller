@@ -5,7 +5,6 @@ ignore:
     - InsightRule
     - ManagedInsightRule
     # - MetricStream
-model_name: monitoring
 operations:
   DeleteAlarms:
     operation_type:
