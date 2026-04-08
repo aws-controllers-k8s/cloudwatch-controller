@@ -5,3 +5,4 @@ resources:
   - bases/cloudwatch.services.k8s.aws_dashboards.yaml
   - bases/cloudwatch.services.k8s.aws_metricalarms.yaml
   - bases/cloudwatch.services.k8s.aws_metricstreams.yaml
+  - bases/cloudwatch.services.k8s.aws_prometheusrules.yaml

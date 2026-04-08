@@ -75,6 +75,7 @@ rules:
   - dashboards
   - metricalarms
   - metricstreams
+  - prometheusrules
   verbs:
   - create
   - delete
@@ -89,6 +90,7 @@ rules:
   - dashboards/status
   - metricalarms/status
   - metricstreams/status
+  - prometheusrules/status
   verbs:
   - get
   - patch

@@ -1,0 +1,99 @@
+# ============================================================
+# BEFORE: What customers have today (Prometheus Operator)
+# ============================================================
+# apiVersion: monitoring.coreos.com/v1
+# kind: PrometheusRule
+# metadata:
+#   name: k8s-infra-alerts
+#   namespace: monitoring
+#   labels:
+#     prometheus: kube-prometheus
+#     role: alert-rules
+#
+# ============================================================
+# AFTER: Change apiVersion + kind, add cloudWatch section
+# ============================================================
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: PrometheusRule
+metadata:
+  name: k8s-infra-alerts
+  namespace: monitoring
+spec:
+  groups:
+
+  - name: kubernetes-pods
+    interval: "1m"
+    rules:
+    - alert: PodCrashLooping
+      expr: |
+        max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}[5m]) >= 1
+      for: "15m"
+      labels:
+        severity: critical
+      annotations:
+        summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash looping"
+        runbook: "https://runbooks.example.com/pod-crashloop"
+
+    - alert: PodNotReady
+      expr: |
+        min_over_time(kube_pod_status_ready{condition="true"}[10m]) == 0
+      for: "15m"
+      labels:
+        severity: warning
+      annotations:
+        summary: "Pod has been in a non-ready state for more than 15 minutes"
+
+    - alert: ContainerOOMKilled
+      expr: |
+        kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
+      for: "0s"
+      labels:
+        severity: critical
+      annotations:
+        summary: "Container was OOM killed"
+
+  - name: kubernetes-nodes
+    interval: "1m"
+    rules:
+    - alert: NodeNotReady
+      expr: |
+        kube_node_status_condition{condition="Ready",status="true"} == 0
+      for: "10m"
+      labels:
+        severity: critical
+      annotations:
+        summary: "Kubernetes node is not ready"
+
+    - alert: NodeHighCPU
+      expr: |
+        100 - (avg by (node) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+      for: "15m"
+      labels:
+        severity: warning
+      annotations:
+        summary: "Node CPU usage above 85%"
+
+    - alert: NodeHighMemory
+      expr: |
+        (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 90
+      for: "10m"
+      labels:
+        severity: critical
+      annotations:
+        summary: "Node memory usage above 90%"
+
+    - alert: NodeDiskPressure
+      expr: |
+        kube_node_status_condition{condition="DiskPressure",status="true"} == 1
+      for: "5m"
+      labels:
+        severity: critical
+      annotations:
+        summary: "Node is under disk pressure"
+
+  cloudWatch:
+    alarmActions:
+      - "arn:aws:sns:us-east-1:123456789012:k8s-infra-critical"
+    okActions:
+      - "arn:aws:sns:us-east-1:123456789012:k8s-infra-resolved"
+    alarmNamePrefix: "cw-k8s"

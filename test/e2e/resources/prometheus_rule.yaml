@@ -1,0 +1,31 @@
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: PrometheusRule
+metadata:
+  name: $PROMETHEUS_RULE_NAME
+spec:
+  groups:
+  - name: e2e-test
+    interval: "1m"
+    rules:
+    - alert: TargetDown
+      expr: up == 0
+      for: "5m"
+      labels:
+        severity: critical
+      annotations:
+        summary: "E2E test alert - target is down"
+    - alert: HighErrorRate
+      expr: |
+        sum(rate(http_requests_total{status=~"5.."}[5m]))
+        / sum(rate(http_requests_total[5m])) > 0.05
+      for: "10m"
+      labels:
+        severity: warning
+      annotations:
+        summary: "E2E test alert - high error rate"
+    - record: job:http_requests:rate5m
+      expr: sum by (job) (rate(http_requests_total[5m]))
+  cloudWatch:
+    alarmActions:
+      - $SNS_TOPIC_ARN
+    alarmNamePrefix: $ALARM_PREFIX
