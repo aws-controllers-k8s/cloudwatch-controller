@@ -42,6 +42,7 @@ import (
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/dashboard"
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/metric_alarm"
 	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/metric_stream"
+	_ "github.com/aws-controllers-k8s/cloudwatch-controller/pkg/resource/prometheus_rule"
 
 	"github.com/aws-controllers-k8s/cloudwatch-controller/pkg/version"
 )

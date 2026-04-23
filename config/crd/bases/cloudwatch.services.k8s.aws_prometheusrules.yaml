@@ -1,0 +1,246 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: prometheusrules.cloudwatch.services.k8s.aws
+spec:
+  group: cloudwatch.services.k8s.aws
+  names:
+    kind: PrometheusRule
+    listKind: PrometheusRuleList
+    plural: prometheusrules
+    singular: prometheusrule
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.alertingRuleCount
+      name: RULES
+      type: integer
+    - jsonPath: .status.skippedRuleCount
+      name: SKIPPED
+      type: integer
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          PrometheusRule is the Schema for the PrometheusRules API.
+          It accepts Prometheus alerting rules and converts them into
+          CloudWatch MetricAlarms using PromQL metric math expressions.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: PrometheusRuleSpec defines the desired state of PrometheusRule.
+            properties:
+              groups:
+                description: |-
+                  Groups of alerting rules to convert into CloudWatch MetricAlarms.
+                  Recording rules are ignored (not supported by CloudWatch).
+                items:
+                  description: RuleGroup is a list of sequentially evaluated alerting
+                    rules.
+                  properties:
+                    interval:
+                      description: |-
+                        Interval between rule evaluations. Maps to the CloudWatch alarm Period.
+                        Accepts Prometheus duration format (e.g. "30s", "1m", "5m").
+                        Defaults to "1m" if not specified.
+                      type: string
+                    name:
+                      description: Name of the rule group.
+                      type: string
+                    rules:
+                      description: List of alerting rules.
+                      items:
+                        description: Rule describes a single alerting rule.
+                        properties:
+                          alert:
+                            description: Name of the alert.
+                            type: string
+                          annotations:
+                            additionalProperties:
+                              type: string
+                            description: Annotations for the alert.
+                            type: object
+                          expr:
+                            description: PromQL expression to evaluate.
+                            type: string
+                          for:
+                            description: |-
+                              Duration for which the condition must be true before firing.
+                              Accepts Prometheus duration format (e.g. "5m", "10m", "1h").
+                            type: string
+                          labels:
+                            additionalProperties:
+                              type: string
+                            description: Labels to attach to the alert.
+                            type: object
+                          record:
+                            description: |-
+                              Record is the name of a recording rule. If set, this rule is
+                              silently skipped.
+                            type: string
+                        required:
+                        - expr
+                        type: object
+                      minItems: 1
+                      type: array
+                  required:
+                  - name
+                  - rules
+                  type: object
+                minItems: 1
+                type: array
+              cloudWatch:
+                description: CloudWatch-specific configuration for alarm actions and
+                  naming.
+                properties:
+                  alarmNamePrefix:
+                    description: Prefix for CloudWatch alarm names. Defaults to the
+                      K8s namespace.
+                    type: string
+                  alarmSNSTopicARN:
+                    description: ARN of the SNS topic for ALARM state notifications.
+                    type: string
+                  insufficientDataSNSTopicARN:
+                    description: ARN of the SNS topic for INSUFFICIENT_DATA state
+                      notifications.
+                    type: string
+                  okSNSTopicARN:
+                    description: ARN of the SNS topic for OK state notifications.
+                    type: string
+                  treatMissingData:
+                    description: 'How to treat missing data points. Defaults to "missing".'
+                    enum:
+                    - breaching
+                    - notBreaching
+                    - ignore
+                    - missing
+                    type: string
+                type: object
+            required:
+            - groups
+            type: object
+          status:
+            description: PrometheusRuleStatus defines the observed state of PrometheusRule.
+            properties:
+              ackResourceMetadata:
+                description: |-
+                  All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
+                  that is used to contain resource sync state, account ownership,
+                  constructed ARN for the resource
+                properties:
+                  arn:
+                    description: |-
+                      ARN is the Amazon Resource Name for the resource. This is a
+                      globally-unique identifier and is set only by the ACK service controller
+                      once the controller has orchestrated the creation of the resource OR
+                      when it has verified that an "adopted" resource (a resource where the
+                      ARN annotation was set by the Kubernetes user on the CR) exists and
+                      matches the supplied CR's Spec field values.
+                    type: string
+                  ownerAccountID:
+                    description: |-
+                      OwnerAccountID is the AWS Account ID of the account that owns the
+                      backend AWS service API resource.
+                    type: string
+                  region:
+                    description: Region is the AWS region in which the resource exists
+                      or will exist.
+                    type: string
+                required:
+                - ownerAccountID
+                - region
+                type: object
+              conditions:
+                description: |-
+                  All CRs managed by ACK have a common `Status.Conditions` member that
+                  contains a collection of `ackv1alpha1.Condition` objects that describe
+                  the various terminal states of the CR and its backend AWS service API
+                  resource
+                items:
+                  description: Condition is the common struct used by all CRDs managed
+                    by ACK service controllers to indicate terminal states of the CR
+                    and its backend AWS service API resource
+                  properties:
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              alertingRuleCount:
+                description: Total number of alerting rules found across all groups.
+                format: int64
+                type: integer
+              skippedRuleCount:
+                description: Number of rules skipped (recording rules).
+                format: int64
+                type: integer
+              alarmStatuses:
+                description: Per-alarm sync status.
+                items:
+                  description: AlarmStatus tracks the sync state of an individual
+                    CloudWatch alarm.
+                  properties:
+                    alarmARN:
+                      description: ARN of the created CloudWatch alarm.
+                      type: string
+                    alarmName:
+                      description: CloudWatch alarm name.
+                      type: string
+                    alertName:
+                      description: Source alert name.
+                      type: string
+                    error:
+                      description: Error message if the alarm failed to sync.
+                      type: string
+                    ruleGroup:
+                      description: Source rule group.
+                      type: string
+                    state:
+                      description: 'Current state: Synced, Error, Pending.'
+                      type: string
+                  required:
+                  - alarmName
+                  - alertName
+                  - ruleGroup
+                  - state
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
