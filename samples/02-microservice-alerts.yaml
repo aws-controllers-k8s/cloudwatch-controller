@@ -1,0 +1,109 @@
+# Application-level alerts using OpenTelemetry metrics ingested via CloudWatch OTLP endpoint.
+#
+# These alerts use metrics from OTel-instrumented microservices that are
+# already flowing into CloudWatch via the OTLP endpoint. The PromQL
+# expressions query the CloudWatch PromQL metrics store directly.
+#
+# Demo flow:
+#   1. App sends OTel metrics → CloudWatch OTLP endpoint
+#   2. CloudWatch enriches with AWS context (@aws.account, @aws.region, etc.)
+#   3. This PrometheusRule creates CloudWatch alarms using PromQL expressions
+#   4. Alarms fire → SNS → PagerDuty/Slack/Lambda
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: PrometheusRule
+metadata:
+  name: order-service-alerts
+  namespace: production
+spec:
+  groups:
+
+  - name: latency
+    interval: "1m"
+    rules:
+    - alert: HighP99Latency
+      expr: |
+        histogram_quantile(0.99,
+          sum by (le) (rate(http_server_request_duration_seconds_bucket{
+            service_name="order-service"
+          }[5m]))
+        ) > 2
+      for: "5m"
+      labels:
+        severity: critical
+        service: order-service
+        team: checkout
+      annotations:
+        summary: "Order service p99 latency above 2s"
+        description: "Customers are experiencing slow checkout"
+
+    - alert: HighP50Latency
+      expr: |
+        histogram_quantile(0.50,
+          sum by (le) (rate(http_server_request_duration_seconds_bucket{
+            service_name="order-service"
+          }[5m]))
+        ) > 0.5
+      for: "10m"
+      labels:
+        severity: warning
+        service: order-service
+      annotations:
+        summary: "Order service median latency above 500ms"
+
+  - name: errors
+    interval: "1m"
+    rules:
+    - alert: HighErrorRate
+      expr: |
+        sum(rate(http_server_request_duration_seconds_count{
+          service_name="order-service",
+          http_response_status_code=~"5.."
+        }[5m]))
+        /
+        sum(rate(http_server_request_duration_seconds_count{
+          service_name="order-service"
+        }[5m]))
+        > 0.01
+      for: "5m"
+      labels:
+        severity: critical
+        service: order-service
+      annotations:
+        summary: "Order service error rate above 1%"
+        description: "More than 1% of requests are returning 5xx errors"
+
+    - alert: UpstreamDependencyErrors
+      expr: |
+        sum(rate(http_client_request_duration_seconds_count{
+          service_name="order-service",
+          http_response_status_code=~"5.."
+        }[5m])) by (server_address) > 0
+      for: "5m"
+      labels:
+        severity: warning
+        service: order-service
+      annotations:
+        summary: "Upstream dependency returning errors"
+
+  - name: saturation
+    interval: "1m"
+    rules:
+    - alert: HighRequestRate
+      expr: |
+        sum(rate(http_server_request_duration_seconds_count{
+          service_name="order-service"
+        }[5m])) > 1000
+      for: "5m"
+      labels:
+        severity: warning
+        service: order-service
+      annotations:
+        summary: "Order service receiving more than 1000 req/s"
+        description: "Unusual traffic spike — check for bot traffic or upstream retry storms"
+
+  cloudWatch:
+    alarmActions:
+      - "arn:aws:sns:us-east-1:123456789012:checkout-team-alerts"
+    okActions:
+      - "arn:aws:sns:us-east-1:123456789012:checkout-team-resolved"
+    alarmNamePrefix: "cw-orders"

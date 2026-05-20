@@ -84,3 +84,14 @@ resources:
         - InvalidParameterInput
     tags:
       ignore: true
+  PrometheusRule:
+    # Custom resource: not generated from CloudWatch API.
+    # The controller translates Prometheus alerting rules into
+    # CloudWatch MetricAlarms using PromQL metric math expressions.
+    # Reconciliation is handled by a custom resource manager in
+    # pkg/resource/prometheus_rule/.
+    is_custom: true
+    fields:
+      Name:
+        is_primary_key: true
+        from: metadata.name
