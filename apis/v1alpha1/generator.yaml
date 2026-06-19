@@ -64,15 +64,12 @@ resources:
         is_primary_key: true
         is_required: true
       DashboardBody:
-        compare:
-          is_ignored: true
+        is_document: true
         is_required: true
       DashboardArn:
         is_read_only: true
 
     hooks:
-      delta_pre_compare:
-        template_path: hooks/dashboard/delta_pre_compare.go.tpl
       sdk_delete_post_build_request:
         template_path: hooks/dashboard/sdk_delete_post_build_request.go.tpl
     exceptions:
