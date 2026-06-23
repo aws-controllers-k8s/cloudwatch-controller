@@ -94,6 +94,22 @@ rules:
   - patch
   - update
 - apiGroups:
+  - firehose.services.k8s.aws
+  resources:
+  - deliverystreams
+  - deliverystreams/status
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - iam.services.k8s.aws
+  resources:
+  - roles
+  - roles/status
+  verbs:
+  - get
+  - list
+- apiGroups:
   - services.k8s.aws
   resources:
   - fieldexports

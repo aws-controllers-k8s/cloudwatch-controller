@@ -43,6 +43,18 @@ operations:
     - Update
     resource_name: Dashboard
 resources:
+  MetricStream:
+    fields:
+      RoleARN:
+        references:
+          service_name: iam
+          resource: Role
+          path: Status.ACKResourceMetadata.ARN
+      FirehoseARN:
+        references:
+          service_name: firehose
+          resource: DeliveryStream
+          path: Status.ACKResourceMetadata.ARN
   MetricAlarm:
     fields:
       Name:
