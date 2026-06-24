@@ -1369,6 +1369,11 @@ func (in *MetricStreamSpec) DeepCopyInto(out *MetricStreamSpec) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.FirehoseRef != nil {
+		in, out := &in.FirehoseRef, &out.FirehoseRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.IncludeFilters != nil {
 		in, out := &in.IncludeFilters, &out.IncludeFilters
 		*out = make([]*MetricStreamFilter, len(*in))
@@ -1399,6 +1404,11 @@ func (in *MetricStreamSpec) DeepCopyInto(out *MetricStreamSpec) {
 		in, out := &in.RoleARN, &out.RoleARN
 		*out = new(string)
 		**out = **in
+	}
+	if in.RoleRef != nil {
+		in, out := &in.RoleRef, &out.RoleRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.StatisticsConfigurations != nil {
 		in, out := &in.StatisticsConfigurations, &out.StatisticsConfigurations

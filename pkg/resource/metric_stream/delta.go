@@ -56,6 +56,9 @@ func newResourceDelta(
 			delta.Add("Spec.FirehoseARN", a.ko.Spec.FirehoseARN, b.ko.Spec.FirehoseARN)
 		}
 	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.FirehoseRef, b.ko.Spec.FirehoseRef) {
+		delta.Add("Spec.FirehoseRef", a.ko.Spec.FirehoseRef, b.ko.Spec.FirehoseRef)
+	}
 	if len(a.ko.Spec.IncludeFilters) != len(b.ko.Spec.IncludeFilters) {
 		delta.Add("Spec.IncludeFilters", a.ko.Spec.IncludeFilters, b.ko.Spec.IncludeFilters)
 	} else if len(a.ko.Spec.IncludeFilters) > 0 {
@@ -90,6 +93,9 @@ func newResourceDelta(
 		if *a.ko.Spec.RoleARN != *b.ko.Spec.RoleARN {
 			delta.Add("Spec.RoleARN", a.ko.Spec.RoleARN, b.ko.Spec.RoleARN)
 		}
+	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.RoleRef, b.ko.Spec.RoleRef) {
+		delta.Add("Spec.RoleRef", a.ko.Spec.RoleRef, b.ko.Spec.RoleRef)
 	}
 	if len(a.ko.Spec.StatisticsConfigurations) != len(b.ko.Spec.StatisticsConfigurations) {
 		delta.Add("Spec.StatisticsConfigurations", a.ko.Spec.StatisticsConfigurations, b.ko.Spec.StatisticsConfigurations)

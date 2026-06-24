@@ -31,8 +31,8 @@ type MetricStreamSpec struct {
 	// The ARN of the Amazon Kinesis Data Firehose delivery stream to use for this
 	// metric stream. This Amazon Kinesis Data Firehose delivery stream must already
 	// exist and must be in the same account as the metric stream.
-	// +kubebuilder:validation:Required
-	FirehoseARN *string `json:"firehoseARN"`
+	FirehoseARN *string                                  `json:"firehoseARN,omitempty"`
+	FirehoseRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"firehoseRef,omitempty"`
 	// If you specify this parameter, the stream sends only the metrics from the
 	// metric namespaces that you specify here.
 	//
@@ -63,9 +63,8 @@ type MetricStreamSpec struct {
 	//   - firehose:PutRecord
 	//
 	//   - firehose:PutRecordBatch
-	//
-	// +kubebuilder:validation:Required
-	RoleARN *string `json:"roleARN"`
+	RoleARN *string                                  `json:"roleARN,omitempty"`
+	RoleRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"roleRef,omitempty"`
 	// By default, a metric stream always sends the MAX, MIN, SUM, and SAMPLECOUNT
 	// statistics for each metric that is streamed. You can use this parameter to
 	// have the metric stream also send additional statistics in the stream. This
