@@ -23,10 +23,19 @@ const (
 	ActionsSuppressedBy_WaitPeriod      ActionsSuppressedBy = "WaitPeriod"
 )
 
+type AlarmMuteRuleStatus string
+
+const (
+	AlarmMuteRuleStatus_ACTIVE    AlarmMuteRuleStatus = "ACTIVE"
+	AlarmMuteRuleStatus_EXPIRED   AlarmMuteRuleStatus = "EXPIRED"
+	AlarmMuteRuleStatus_SCHEDULED AlarmMuteRuleStatus = "SCHEDULED"
+)
+
 type AlarmType string
 
 const (
 	AlarmType_CompositeAlarm AlarmType = "CompositeAlarm"
+	AlarmType_LogAlarm       AlarmType = "LogAlarm"
 	AlarmType_MetricAlarm    AlarmType = "MetricAlarm"
 )
 
@@ -60,15 +69,19 @@ const (
 type EvaluationState string
 
 const (
-	EvaluationState_PARTIAL_DATA EvaluationState = "PARTIAL_DATA"
+	EvaluationState_EVALUATION_ERROR   EvaluationState = "EVALUATION_ERROR"
+	EvaluationState_EVALUATION_FAILURE EvaluationState = "EVALUATION_FAILURE"
+	EvaluationState_PARTIAL_DATA       EvaluationState = "PARTIAL_DATA"
 )
 
 type HistoryItemType string
 
 const (
-	HistoryItemType_Action              HistoryItemType = "Action"
-	HistoryItemType_ConfigurationUpdate HistoryItemType = "ConfigurationUpdate"
-	HistoryItemType_StateUpdate         HistoryItemType = "StateUpdate"
+	HistoryItemType_Action                      HistoryItemType = "Action"
+	HistoryItemType_AlarmContributorAction      HistoryItemType = "AlarmContributorAction"
+	HistoryItemType_AlarmContributorStateUpdate HistoryItemType = "AlarmContributorStateUpdate"
+	HistoryItemType_ConfigurationUpdate         HistoryItemType = "ConfigurationUpdate"
+	HistoryItemType_StateUpdate                 HistoryItemType = "StateUpdate"
 )
 
 type MetricStreamOutputFormat string
@@ -77,6 +90,13 @@ const (
 	MetricStreamOutputFormat_json             MetricStreamOutputFormat = "json"
 	MetricStreamOutputFormat_opentelemetry0_7 MetricStreamOutputFormat = "opentelemetry0.7"
 	MetricStreamOutputFormat_opentelemetry1_0 MetricStreamOutputFormat = "opentelemetry1.0"
+)
+
+type OTelEnrichmentStatus string
+
+const (
+	OTelEnrichmentStatus_Running OTelEnrichmentStatus = "Running"
+	OTelEnrichmentStatus_Stopped OTelEnrichmentStatus = "Stopped"
 )
 
 type RecentlyActive string

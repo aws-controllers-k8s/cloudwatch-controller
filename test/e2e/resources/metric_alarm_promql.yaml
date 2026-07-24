@@ -1,0 +1,19 @@
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: MetricAlarm
+metadata:
+  name: $METRIC_ALARM_NAME
+spec:
+  name: $METRIC_ALARM_NAME
+  alarmDescription: PromQL alarm on container CPU utilization
+  # A PromQL alarm is configured entirely through evaluationCriteria. The
+  # metric-based fields (metricName, namespace, dimensions, period, unit,
+  # statistic, extendedStatistic, metrics, threshold, comparisonOperator,
+  # thresholdMetricID, evaluationPeriods, datapointsToAlarm) must not be set
+  # alongside it. evaluationInterval is required for these alarms and must not
+  # be set on metric-based alarms.
+  evaluationInterval: 60
+  evaluationCriteria:
+    promQLCriteria:
+      query: max by (k8s_namespace_name) (container_cpu_utilization) > 90
+      pendingPeriod: 120
+      recoveryPeriod: 120

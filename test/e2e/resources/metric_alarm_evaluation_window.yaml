@@ -1,0 +1,21 @@
+apiVersion: cloudwatch.services.k8s.aws/v1alpha1
+kind: MetricAlarm
+metadata:
+  name: $METRIC_ALARM_NAME
+spec:
+  alarmDescription: CPU Utilization greater than or equal to 90% for 5 minutes
+  name: $METRIC_ALARM_NAME
+  comparisonOperator: GreaterThanOrEqualToThreshold
+  evaluationPeriods: 5
+  metricName: CPUUtilization
+  namespace: AWS/EC2
+  period: 60
+  statistic: Maximum
+  threshold: 90
+  # evaluationWindow is a union: exactly one of slidingWindow or
+  # wallClockWindow. A wall clock window aligns evaluation to fixed clock
+  # boundaries and requires period to be 60, 300, 3600, 86400 or 604800.
+  # It is not supported on PromQL alarms.
+  evaluationWindow:
+    wallClockWindow:
+      timezone: America/New_York

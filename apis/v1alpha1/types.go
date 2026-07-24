@@ -28,11 +28,35 @@ var (
 	_ = ackv1alpha1.AWSAccountID("")
 )
 
+// Represents an individual contributor to a multi-timeseries alarm, containing
+// information about a specific time series and its contribution to the alarm's
+// state.
+type AlarmContributor struct {
+	StateReason                *string      `json:"stateReason,omitempty"`
+	StateTransitionedTimestamp *metav1.Time `json:"stateTransitionedTimestamp,omitempty"`
+}
+
 // Represents the history of a specific alarm.
 type AlarmHistoryItem struct {
 	AlarmName *string      `json:"alarmName,omitempty"`
 	AlarmType *string      `json:"alarmType,omitempty"`
 	Timestamp *metav1.Time `json:"timestamp,omitempty"`
+}
+
+// Summary information about an alarm mute rule, including its name, status,
+// and configuration details.
+type AlarmMuteRuleSummary struct {
+	ExpireDate           *metav1.Time `json:"expireDate,omitempty"`
+	LastUpdatedTimestamp *metav1.Time `json:"lastUpdatedTimestamp,omitempty"`
+}
+
+// Contains the configuration that determines how a PromQL alarm evaluates its
+// contributors, including the query to run and the durations that define when
+// contributors transition between states.
+type AlarmPromQLCriteria struct {
+	PendingPeriod  *int64  `json:"pendingPeriod,omitempty"`
+	Query          *string `json:"query,omitempty"`
+	RecoveryPeriod *int64  `json:"recoveryPeriod,omitempty"`
 }
 
 // An anomaly detection model associated with a particular CloudWatch metric,
@@ -110,6 +134,46 @@ type DimensionFilter struct {
 	Value *string `json:"value,omitempty"`
 }
 
+// The evaluation criteria for an alarm. This is a union type that currently
+// supports PromQLCriteria.
+type EvaluationCriteria struct {
+	// Contains the configuration that determines how a PromQL alarm evaluates its
+	// contributors, including the query to run and the durations that define when
+	// contributors transition between states.
+	PromQLCriteria *AlarmPromQLCriteria `json:"promQLCriteria,omitempty"`
+}
+
+// The evaluation window that an alarm uses to select the range of metric data
+// that it evaluates each time it runs. This is a union type. Set exactly one
+// of its members, SlidingWindow or WallClockWindow. If you don't set EvaluationWindow,
+// the alarm uses a SlidingWindow by default.
+//
+// For more information, see Alarm evaluation windows (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html)
+// in the CloudWatch User Guide.
+type EvaluationWindow struct {
+	// An evaluation window that advances each time the alarm is evaluated, forming
+	// a rolling time window. This is the default evaluation window. A sliding window
+	// has no additional configuration options.
+	//
+	// Choose a sliding window when you need the fastest detection and the calendar
+	// boundaries of the data don't matter, such as for continuous performance,
+	// latency, or resource-exhaustion monitoring.
+	SlidingWindow map[string]*string `json:"slidingWindow,omitempty"`
+	// An evaluation window that aligns the evaluated range to fixed clock boundaries
+	// that match the alarm's period, such as the top of the hour, midnight, or
+	// the start of the calendar week, optionally in a specific time zone.
+	//
+	// When you use a wall clock window, the alarm's period must be 1 minute (60
+	// seconds), 5 minutes (300 seconds), 1 hour (3,600 seconds), 1 day (86,400
+	// seconds), or 1 week (604,800 seconds). Other period values aren't supported
+	// with a wall clock window.
+	//
+	// Choose a wall clock window when your monitoring is tied to a business or
+	// calendar period, such as daily reports, batch jobs, or backups, or when you
+	// want alarm evaluations to match the periods shown on a metric dashboard.
+	WallClockWindow *WallClockWindow `json:"wallClockWindow,omitempty"`
+}
+
 // One data point related to one contributor.
 //
 // For more information, see GetInsightRuleReport (https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetInsightRuleReport.html)
@@ -124,6 +188,34 @@ type InsightRuleContributorDatapoint struct {
 // For more information, see GetInsightRuleReport (https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetInsightRuleReport.html).
 type InsightRuleMetricDatapoint struct {
 	Timestamp *metav1.Time `json:"timestamp,omitempty"`
+}
+
+// The details about a log alarm.
+type LogAlarm struct {
+	ActionLogLineCount                 *int64       `json:"actionLogLineCount,omitempty"`
+	ActionLogLineRoleARN               *string      `json:"actionLogLineRoleARN,omitempty"`
+	ActionsEnabled                     *bool        `json:"actionsEnabled,omitempty"`
+	AlarmActions                       []*string    `json:"alarmActions,omitempty"`
+	AlarmARN                           *string      `json:"alarmARN,omitempty"`
+	AlarmConfigurationUpdatedTimestamp *metav1.Time `json:"alarmConfigurationUpdatedTimestamp,omitempty"`
+	AlarmDescription                   *string      `json:"alarmDescription,omitempty"`
+	AlarmName                          *string      `json:"alarmName,omitempty"`
+	ComparisonOperator                 *string      `json:"comparisonOperator,omitempty"`
+	EvaluationState                    *string      `json:"evaluationState,omitempty"`
+	InsufficientDataActions            []*string    `json:"insufficientDataActions,omitempty"`
+	OKActions                          []*string    `json:"oKActions,omitempty"`
+	QueryResultsToAlarm                *int64       `json:"queryResultsToAlarm,omitempty"`
+	QueryResultsToEvaluate             *int64       `json:"queryResultsToEvaluate,omitempty"`
+	// The configuration of the CloudWatch Logs scheduled query that backs a log
+	// alarm.
+	ScheduledQueryConfiguration *ScheduledQueryConfiguration `json:"scheduledQueryConfiguration,omitempty"`
+	StateReason                 *string                      `json:"stateReason,omitempty"`
+	StateReasonData             *string                      `json:"stateReasonData,omitempty"`
+	StateTransitionedTimestamp  *metav1.Time                 `json:"stateTransitionedTimestamp,omitempty"`
+	StateUpdatedTimestamp       *metav1.Time                 `json:"stateUpdatedTimestamp,omitempty"`
+	StateValue                  *string                      `json:"stateValue,omitempty"`
+	Threshold                   *float64                     `json:"threshold,omitempty"`
+	TreatMissingData            *string                      `json:"treatMissingData,omitempty"`
 }
 
 // Contains the information that's required to enable a managed Contributor
@@ -148,35 +240,47 @@ type Metric struct {
 
 // The details about a metric alarm.
 type MetricAlarm_SDK struct {
-	ActionsEnabled                     *bool              `json:"actionsEnabled,omitempty"`
-	AlarmActions                       []*string          `json:"alarmActions,omitempty"`
-	AlarmARN                           *string            `json:"alarmARN,omitempty"`
-	AlarmConfigurationUpdatedTimestamp *metav1.Time       `json:"alarmConfigurationUpdatedTimestamp,omitempty"`
-	AlarmDescription                   *string            `json:"alarmDescription,omitempty"`
-	AlarmName                          *string            `json:"alarmName,omitempty"`
-	ComparisonOperator                 *string            `json:"comparisonOperator,omitempty"`
-	DatapointsToAlarm                  *int64             `json:"datapointsToAlarm,omitempty"`
-	Dimensions                         []*Dimension       `json:"dimensions,omitempty"`
-	EvaluateLowSampleCountPercentile   *string            `json:"evaluateLowSampleCountPercentile,omitempty"`
-	EvaluationPeriods                  *int64             `json:"evaluationPeriods,omitempty"`
-	EvaluationState                    *string            `json:"evaluationState,omitempty"`
-	ExtendedStatistic                  *string            `json:"extendedStatistic,omitempty"`
-	InsufficientDataActions            []*string          `json:"insufficientDataActions,omitempty"`
-	MetricName                         *string            `json:"metricName,omitempty"`
-	Metrics                            []*MetricDataQuery `json:"metrics,omitempty"`
-	Namespace                          *string            `json:"namespace,omitempty"`
-	OKActions                          []*string          `json:"oKActions,omitempty"`
-	Period                             *int64             `json:"period,omitempty"`
-	StateReason                        *string            `json:"stateReason,omitempty"`
-	StateReasonData                    *string            `json:"stateReasonData,omitempty"`
-	StateTransitionedTimestamp         *metav1.Time       `json:"stateTransitionedTimestamp,omitempty"`
-	StateUpdatedTimestamp              *metav1.Time       `json:"stateUpdatedTimestamp,omitempty"`
-	StateValue                         *string            `json:"stateValue,omitempty"`
-	Statistic                          *string            `json:"statistic,omitempty"`
-	Threshold                          *float64           `json:"threshold,omitempty"`
-	ThresholdMetricID                  *string            `json:"thresholdMetricID,omitempty"`
-	TreatMissingData                   *string            `json:"treatMissingData,omitempty"`
-	Unit                               *string            `json:"unit,omitempty"`
+	ActionsEnabled                     *bool        `json:"actionsEnabled,omitempty"`
+	AlarmActions                       []*string    `json:"alarmActions,omitempty"`
+	AlarmARN                           *string      `json:"alarmARN,omitempty"`
+	AlarmConfigurationUpdatedTimestamp *metav1.Time `json:"alarmConfigurationUpdatedTimestamp,omitempty"`
+	AlarmDescription                   *string      `json:"alarmDescription,omitempty"`
+	AlarmName                          *string      `json:"alarmName,omitempty"`
+	ComparisonOperator                 *string      `json:"comparisonOperator,omitempty"`
+	DatapointsToAlarm                  *int64       `json:"datapointsToAlarm,omitempty"`
+	Dimensions                         []*Dimension `json:"dimensions,omitempty"`
+	EvaluateLowSampleCountPercentile   *string      `json:"evaluateLowSampleCountPercentile,omitempty"`
+	// The evaluation criteria for an alarm. This is a union type that currently
+	// supports PromQLCriteria.
+	EvaluationCriteria *EvaluationCriteria `json:"evaluationCriteria,omitempty"`
+	EvaluationInterval *int64              `json:"evaluationInterval,omitempty"`
+	EvaluationPeriods  *int64              `json:"evaluationPeriods,omitempty"`
+	EvaluationState    *string             `json:"evaluationState,omitempty"`
+	// The evaluation window that an alarm uses to select the range of metric data
+	// that it evaluates each time it runs. This is a union type. Set exactly one
+	// of its members, SlidingWindow or WallClockWindow. If you don't set EvaluationWindow,
+	// the alarm uses a SlidingWindow by default.
+	//
+	// For more information, see Alarm evaluation windows (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html)
+	// in the CloudWatch User Guide.
+	EvaluationWindow           *EvaluationWindow  `json:"evaluationWindow,omitempty"`
+	ExtendedStatistic          *string            `json:"extendedStatistic,omitempty"`
+	InsufficientDataActions    []*string          `json:"insufficientDataActions,omitempty"`
+	MetricName                 *string            `json:"metricName,omitempty"`
+	Metrics                    []*MetricDataQuery `json:"metrics,omitempty"`
+	Namespace                  *string            `json:"namespace,omitempty"`
+	OKActions                  []*string          `json:"oKActions,omitempty"`
+	Period                     *int64             `json:"period,omitempty"`
+	StateReason                *string            `json:"stateReason,omitempty"`
+	StateReasonData            *string            `json:"stateReasonData,omitempty"`
+	StateTransitionedTimestamp *metav1.Time       `json:"stateTransitionedTimestamp,omitempty"`
+	StateUpdatedTimestamp      *metav1.Time       `json:"stateUpdatedTimestamp,omitempty"`
+	StateValue                 *string            `json:"stateValue,omitempty"`
+	Statistic                  *string            `json:"statistic,omitempty"`
+	Threshold                  *float64           `json:"threshold,omitempty"`
+	ThresholdMetricID          *string            `json:"thresholdMetricID,omitempty"`
+	TreatMissingData           *string            `json:"treatMissingData,omitempty"`
+	Unit                       *string            `json:"unit,omitempty"`
 }
 
 // This structure is used in both GetMetricData and PutMetricAlarm. The supported
@@ -297,6 +401,37 @@ type Range struct {
 	StartTime *metav1.Time `json:"startTime,omitempty"`
 }
 
+// Specifies when and how long an alarm mute rule is active.
+//
+// The schedule uses either a cron expression for recurring mute windows or
+// an at expression for one-time mute windows. When the schedule activates,
+// the mute rule mutes alarm actions for the specified duration.
+type Schedule struct {
+	Timezone *string `json:"timezone,omitempty"`
+}
+
+// Contains the schedule expression and time-range offsets that define when
+// a scheduled query runs and what time range each execution covers.
+type ScheduleConfiguration struct {
+	EndTimeOffset      *int64  `json:"endTimeOffset,omitempty"`
+	ScheduleExpression *string `json:"scheduleExpression,omitempty"`
+	StartTimeOffset    *int64  `json:"startTimeOffset,omitempty"`
+}
+
+// The configuration of the CloudWatch Logs scheduled query that backs a log
+// alarm.
+type ScheduledQueryConfiguration struct {
+	AggregationExpression *string   `json:"aggregationExpression,omitempty"`
+	LogGroupIdentifiers   []*string `json:"logGroupIdentifiers,omitempty"`
+	QueryARN              *string   `json:"queryARN,omitempty"`
+	QueryString           *string   `json:"queryString,omitempty"`
+	// Contains the schedule expression and time-range offsets that define when
+	// a scheduled query runs and what time range each execution covers.
+	ScheduleConfiguration *ScheduleConfiguration `json:"scheduleConfiguration,omitempty"`
+	ScheduledQueryRoleARN *string                `json:"scheduledQueryRoleARN,omitempty"`
+	Tags                  []*Tag                 `json:"tags,omitempty"`
+}
+
 // Designates the CloudWatch metric and statistic that provides the time series
 // the anomaly detector uses as input. If you have enabled unified cross-account
 // observability, and this account is a monitoring account, the metric can be
@@ -312,4 +447,20 @@ type SingleMetricAnomalyDetector struct {
 type Tag struct {
 	Key   *string `json:"key,omitempty"`
 	Value *string `json:"value,omitempty"`
+}
+
+// An evaluation window that aligns the evaluated range to fixed clock boundaries
+// that match the alarm's period, such as the top of the hour, midnight, or
+// the start of the calendar week, optionally in a specific time zone.
+//
+// When you use a wall clock window, the alarm's period must be 1 minute (60
+// seconds), 5 minutes (300 seconds), 1 hour (3,600 seconds), 1 day (86,400
+// seconds), or 1 week (604,800 seconds). Other period values aren't supported
+// with a wall clock window.
+//
+// Choose a wall clock window when your monitoring is tied to a business or
+// calendar period, such as daily reports, batch jobs, or backups, or when you
+// want alarm evaluations to match the periods shown on a metric dashboard.
+type WallClockWindow struct {
+	Timezone *string `json:"timezone,omitempty"`
 }
