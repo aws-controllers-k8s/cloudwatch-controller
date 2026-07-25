@@ -74,7 +74,7 @@ type MetricAlarmSpec struct {
 	//
 	// # Start a Amazon Q Developer operational investigation
 	//
-	// arn:aws:aiops:region:account-id:investigation-group:ingestigation-group-id
+	// arn:aws:aiops:region:account-id:investigation-group:investigation-group-id
 	AlarmActions []*string `json:"alarmActions,omitempty"`
 	// The description for the alarm.
 	AlarmDescription *string `json:"alarmDescription,omitempty"`
@@ -84,8 +84,7 @@ type MetricAlarmSpec struct {
 	// The values LessThanLowerOrGreaterThanUpperThreshold, LessThanLowerThreshold,
 	// and GreaterThanUpperThreshold are used only for alarms based on anomaly detection
 	// models.
-	// +kubebuilder:validation:Required
-	ComparisonOperator *string `json:"comparisonOperator"`
+	ComparisonOperator *string `json:"comparisonOperator,omitempty"`
 	// The number of data points that must be breaching to trigger the alarm. This
 	// is used only if you are setting an "M out of N" alarm. In that case, this
 	// value is the M. For more information, see Evaluating an Alarm (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarm-evaluation)
@@ -102,15 +101,43 @@ type MetricAlarmSpec struct {
 	//
 	// Valid Values: evaluate | ignore
 	EvaluateLowSampleCountPercentile *string `json:"evaluateLowSampleCountPercentile,omitempty"`
+	// The evaluation criteria for the alarm. For each PutMetricAlarm operation,
+	// you must specify either MetricName, a Metrics array, or an EvaluationCriteria.
+	//
+	// If you use the EvaluationCriteria parameter, you cannot include the Namespace,
+	// MetricName, Dimensions, Period, Unit, Statistic, ExtendedStatistic, Metrics,
+	// Threshold, ComparisonOperator, ThresholdMetricId, EvaluationPeriods, or DatapointsToAlarm
+	// parameters of PutMetricAlarm in the same operation. Instead, all evaluation
+	// parameters are defined within this structure.
+	//
+	// For an example of how to use this parameter, see the PromQL alarm example
+	// on this page.
+	EvaluationCriteria *EvaluationCriteria `json:"evaluationCriteria,omitempty"`
+	// The frequency, in seconds, at which the alarm is evaluated. Valid values
+	// are 10, 20, 30, and any multiple of 60.
+	//
+	// This parameter is required for alarms that use EvaluationCriteria, and cannot
+	// be specified for alarms configured with MetricName or Metrics.
+	EvaluationInterval *int64 `json:"evaluationInterval,omitempty"`
 	// The number of periods over which data is compared to the specified threshold.
 	// If you are setting an alarm that requires that a number of consecutive data
 	// points be breaching to trigger the alarm, this value specifies that number.
 	// If you are setting an "M out of N" alarm, this value is the N.
+	EvaluationPeriods *int64 `json:"evaluationPeriods,omitempty"`
+	// The evaluation window that the alarm uses to select the range of metric data
+	// that it evaluates. Specify either a sliding window or a wall clock window.
+	// If you omit this parameter, the alarm uses a sliding window.
 	//
-	// An alarm's total current evaluation period can be no longer than one day,
-	// so this number multiplied by Period cannot be more than 86,400 seconds.
-	// +kubebuilder:validation:Required
-	EvaluationPeriods *int64 `json:"evaluationPeriods"`
+	// A sliding window advances each time the alarm is evaluated, forming a rolling
+	// time window. A wall clock window aligns the evaluated range to fixed clock
+	// boundaries, such as the top of the hour or the start of the day.
+	//
+	// You can use EvaluationWindow with any type of metric alarm except alarms
+	// that are based on a PromQL query.
+	//
+	// For more information, see Alarm evaluation windows (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-evaluation-window.html)
+	// in the CloudWatch User Guide.
+	EvaluationWindow *EvaluationWindow `json:"evaluationWindow,omitempty"`
 	// The extended statistic for the metric specified in MetricName. When you call
 	// PutMetricAlarm and specify a MetricName, you must specify either Statistic
 	// or ExtendedStatistic but not both.
@@ -187,7 +214,7 @@ type MetricAlarmSpec struct {
 	//   - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
 	InsufficientDataActions []*string `json:"insufficientDataActions,omitempty"`
 	// The name for the metric associated with the alarm. For each PutMetricAlarm
-	// operation, you must specify either MetricName or a Metrics array.
+	// operation, you must specify either MetricName, a Metrics array, or an EvaluationCriteria.
 	//
 	// If you are creating an alarm based on a math expression, you cannot specify
 	// this parameter, or any of the Namespace, Dimensions, Period, Unit, Statistic,
@@ -196,7 +223,7 @@ type MetricAlarmSpec struct {
 	MetricName *string `json:"metricName,omitempty"`
 	// An array of MetricDataQuery structures that enable you to create an alarm
 	// based on the result of a metric math expression. For each PutMetricAlarm
-	// operation, you must specify either MetricName or a Metrics array.
+	// operation, you must specify either MetricName, a Metrics array, or an EvaluationCriteria.
 	//
 	// Each item in the Metrics array either retrieves a metric or performs a math
 	// expression.
@@ -265,24 +292,26 @@ type MetricAlarmSpec struct {
 	//   - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
 	OKActions []*string `json:"oKActions,omitempty"`
 	// The length, in seconds, used each time the metric specified in MetricName
-	// is evaluated. Valid values are 10, 30, and any multiple of 60.
+	// is evaluated. Valid values are 10, 20, 30, and any multiple of 60.
 	//
 	// Period is required for alarms based on static thresholds. If you are creating
 	// an alarm based on a metric math expression, you specify the period for each
 	// metric within the objects in the Metrics array.
 	//
-	// Be sure to specify 10 or 30 only for metrics that are stored by a PutMetricData
-	// call with a StorageResolution of 1. If you specify a period of 10 or 30 for
-	// a metric that does not have sub-minute resolution, the alarm still attempts
-	// to gather data at the period rate that you specify. In this case, it does
-	// not receive data for the attempts that do not correspond to a one-minute
+	// Be sure to specify 10, 20, or 30 only for metrics that are stored by a PutMetricData
+	// call with a StorageResolution of 1. If you specify a period of 10, 20, or
+	// 30 for a metric that does not have sub-minute resolution, the alarm still
+	// attempts to gather data at the period rate that you specify. In this case,
+	// it does not receive data for the attempts that do not correspond to a one-minute
 	// data resolution, and the alarm might often lapse into INSUFFICENT_DATA status.
-	// Specifying 10 or 30 also sets this alarm as a high-resolution alarm, which
-	// has a higher charge than other alarms. For more information about pricing,
+	// Specifying 10, 20, or 30 also sets this alarm as a high-resolution alarm,
+	// which has a higher charge than other alarms. For more information about pricing,
 	// see Amazon CloudWatch Pricing (https://aws.amazon.com/cloudwatch/pricing/).
 	//
-	// An alarm's total current evaluation period can be no longer than one day,
-	// so Period multiplied by EvaluationPeriods cannot be more than 86,400 seconds.
+	// An alarm's total current evaluation period can be no longer than seven days,
+	// so Period multiplied by EvaluationPeriods can't be more than 604,800 seconds.
+	// For alarms with a period of less than one hour (3,600 seconds), the total
+	// evaluation period can't be longer than one day (86,400 seconds).
 	Period *int64 `json:"period,omitempty"`
 	// The statistic for the metric specified in MetricName, other than percentile.
 	// For percentile statistics, use ExtendedStatistic. When you call PutMetricAlarm
@@ -329,6 +358,8 @@ type MetricAlarmSpec struct {
 	// missing data even if you choose a different option for TreatMissingData.
 	// When an AWS/DynamoDB metric has missing data, alarms that evaluate that metric
 	// remain in their current state.
+	//
+	// This parameter is not applicable to PromQL alarms.
 	TreatMissingData *string `json:"treatMissingData,omitempty"`
 	// The unit of measure for the statistic. For example, the units for the Amazon
 	// EC2 NetworkIn metric are Bytes because NetworkIn tracks the number of bytes

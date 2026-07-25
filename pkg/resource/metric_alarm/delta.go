@@ -91,11 +91,66 @@ func newResourceDelta(
 			delta.Add("Spec.EvaluateLowSampleCountPercentile", a.ko.Spec.EvaluateLowSampleCountPercentile, b.ko.Spec.EvaluateLowSampleCountPercentile)
 		}
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.EvaluationCriteria, b.ko.Spec.EvaluationCriteria) {
+		delta.Add("Spec.EvaluationCriteria", a.ko.Spec.EvaluationCriteria, b.ko.Spec.EvaluationCriteria)
+	} else if a.ko.Spec.EvaluationCriteria != nil && b.ko.Spec.EvaluationCriteria != nil {
+		if ackcompare.HasNilDifference(a.ko.Spec.EvaluationCriteria.PromQLCriteria, b.ko.Spec.EvaluationCriteria.PromQLCriteria) {
+			delta.Add("Spec.EvaluationCriteria.PromQLCriteria", a.ko.Spec.EvaluationCriteria.PromQLCriteria, b.ko.Spec.EvaluationCriteria.PromQLCriteria)
+		} else if a.ko.Spec.EvaluationCriteria.PromQLCriteria != nil && b.ko.Spec.EvaluationCriteria.PromQLCriteria != nil {
+			if ackcompare.HasNilDifference(a.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod, b.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod) {
+				delta.Add("Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod", a.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod, b.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod)
+			} else if a.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod != nil && b.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod != nil {
+				if *a.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod != *b.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod {
+					delta.Add("Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod", a.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod, b.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.EvaluationCriteria.PromQLCriteria.Query, b.ko.Spec.EvaluationCriteria.PromQLCriteria.Query) {
+				delta.Add("Spec.EvaluationCriteria.PromQLCriteria.Query", a.ko.Spec.EvaluationCriteria.PromQLCriteria.Query, b.ko.Spec.EvaluationCriteria.PromQLCriteria.Query)
+			} else if a.ko.Spec.EvaluationCriteria.PromQLCriteria.Query != nil && b.ko.Spec.EvaluationCriteria.PromQLCriteria.Query != nil {
+				if *a.ko.Spec.EvaluationCriteria.PromQLCriteria.Query != *b.ko.Spec.EvaluationCriteria.PromQLCriteria.Query {
+					delta.Add("Spec.EvaluationCriteria.PromQLCriteria.Query", a.ko.Spec.EvaluationCriteria.PromQLCriteria.Query, b.ko.Spec.EvaluationCriteria.PromQLCriteria.Query)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod, b.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod) {
+				delta.Add("Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod", a.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod, b.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod)
+			} else if a.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod != nil && b.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod != nil {
+				if *a.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod != *b.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod {
+					delta.Add("Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod", a.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod, b.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod)
+				}
+			}
+		}
+	}
+	if ackcompare.HasNilDifference(a.ko.Spec.EvaluationInterval, b.ko.Spec.EvaluationInterval) {
+		delta.Add("Spec.EvaluationInterval", a.ko.Spec.EvaluationInterval, b.ko.Spec.EvaluationInterval)
+	} else if a.ko.Spec.EvaluationInterval != nil && b.ko.Spec.EvaluationInterval != nil {
+		if *a.ko.Spec.EvaluationInterval != *b.ko.Spec.EvaluationInterval {
+			delta.Add("Spec.EvaluationInterval", a.ko.Spec.EvaluationInterval, b.ko.Spec.EvaluationInterval)
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.EvaluationPeriods, b.ko.Spec.EvaluationPeriods) {
 		delta.Add("Spec.EvaluationPeriods", a.ko.Spec.EvaluationPeriods, b.ko.Spec.EvaluationPeriods)
 	} else if a.ko.Spec.EvaluationPeriods != nil && b.ko.Spec.EvaluationPeriods != nil {
 		if *a.ko.Spec.EvaluationPeriods != *b.ko.Spec.EvaluationPeriods {
 			delta.Add("Spec.EvaluationPeriods", a.ko.Spec.EvaluationPeriods, b.ko.Spec.EvaluationPeriods)
+		}
+	}
+	if ackcompare.HasNilDifference(a.ko.Spec.EvaluationWindow, b.ko.Spec.EvaluationWindow) {
+		delta.Add("Spec.EvaluationWindow", a.ko.Spec.EvaluationWindow, b.ko.Spec.EvaluationWindow)
+	} else if a.ko.Spec.EvaluationWindow != nil && b.ko.Spec.EvaluationWindow != nil {
+		if ackcompare.HasNilDifference(a.ko.Spec.EvaluationWindow.SlidingWindow, b.ko.Spec.EvaluationWindow.SlidingWindow) {
+			delta.Add("Spec.EvaluationWindow.SlidingWindow", a.ko.Spec.EvaluationWindow.SlidingWindow, b.ko.Spec.EvaluationWindow.SlidingWindow)
+		} else if a.ko.Spec.EvaluationWindow.SlidingWindow != nil && b.ko.Spec.EvaluationWindow.SlidingWindow != nil {
+		}
+		if ackcompare.HasNilDifference(a.ko.Spec.EvaluationWindow.WallClockWindow, b.ko.Spec.EvaluationWindow.WallClockWindow) {
+			delta.Add("Spec.EvaluationWindow.WallClockWindow", a.ko.Spec.EvaluationWindow.WallClockWindow, b.ko.Spec.EvaluationWindow.WallClockWindow)
+		} else if a.ko.Spec.EvaluationWindow.WallClockWindow != nil && b.ko.Spec.EvaluationWindow.WallClockWindow != nil {
+			if ackcompare.HasNilDifference(a.ko.Spec.EvaluationWindow.WallClockWindow.Timezone, b.ko.Spec.EvaluationWindow.WallClockWindow.Timezone) {
+				delta.Add("Spec.EvaluationWindow.WallClockWindow.Timezone", a.ko.Spec.EvaluationWindow.WallClockWindow.Timezone, b.ko.Spec.EvaluationWindow.WallClockWindow.Timezone)
+			} else if a.ko.Spec.EvaluationWindow.WallClockWindow.Timezone != nil && b.ko.Spec.EvaluationWindow.WallClockWindow.Timezone != nil {
+				if *a.ko.Spec.EvaluationWindow.WallClockWindow.Timezone != *b.ko.Spec.EvaluationWindow.WallClockWindow.Timezone {
+					delta.Add("Spec.EvaluationWindow.WallClockWindow.Timezone", a.ko.Spec.EvaluationWindow.WallClockWindow.Timezone, b.ko.Spec.EvaluationWindow.WallClockWindow.Timezone)
+				}
+			}
 		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ExtendedStatistic, b.ko.Spec.ExtendedStatistic) {

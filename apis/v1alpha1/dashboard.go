@@ -28,7 +28,7 @@ type DashboardSpec struct {
 	// required.
 	//
 	// For more information about the syntax, see Dashboard Body Structure and Syntax
-	// (https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/CloudWatch-Dashboard-Body-Structure.html).
+	// (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Dashboard-Body-Structure.html).
 	// +kubebuilder:validation:Required
 	DashboardBody *string `json:"dashboardBody"`
 	// The name of the dashboard. If a dashboard with this name already exists,

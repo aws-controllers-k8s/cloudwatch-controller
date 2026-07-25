@@ -141,11 +141,65 @@ func (rm *resourceManager) sdkFind(
 		} else {
 			ko.Spec.EvaluateLowSampleCountPercentile = nil
 		}
+		if elem.EvaluationCriteria != nil {
+			f10 := &svcapitypes.EvaluationCriteria{}
+			switch elem.EvaluationCriteria.(type) {
+			case *svcsdktypes.EvaluationCriteriaMemberPromQLCriteria:
+				f10f0 := elem.EvaluationCriteria.(*svcsdktypes.EvaluationCriteriaMemberPromQLCriteria)
+				if f10f0 != nil {
+					f10f0f0 := &svcapitypes.AlarmPromQLCriteria{}
+					if f10f0.Value.PendingPeriod != nil {
+						pendingPeriodCopy := int64(*f10f0.Value.PendingPeriod)
+						f10f0f0.PendingPeriod = &pendingPeriodCopy
+					}
+					if f10f0.Value.Query != nil {
+						f10f0f0.Query = f10f0.Value.Query
+					}
+					if f10f0.Value.RecoveryPeriod != nil {
+						recoveryPeriodCopy := int64(*f10f0.Value.RecoveryPeriod)
+						f10f0f0.RecoveryPeriod = &recoveryPeriodCopy
+					}
+					f10.PromQLCriteria = f10f0f0
+				}
+			}
+			ko.Spec.EvaluationCriteria = f10
+		} else {
+			ko.Spec.EvaluationCriteria = nil
+		}
+		if elem.EvaluationInterval != nil {
+			evaluationIntervalCopy := int64(*elem.EvaluationInterval)
+			ko.Spec.EvaluationInterval = &evaluationIntervalCopy
+		} else {
+			ko.Spec.EvaluationInterval = nil
+		}
 		if elem.EvaluationPeriods != nil {
 			evaluationPeriodsCopy := int64(*elem.EvaluationPeriods)
 			ko.Spec.EvaluationPeriods = &evaluationPeriodsCopy
 		} else {
 			ko.Spec.EvaluationPeriods = nil
+		}
+		if elem.EvaluationWindow != nil {
+			f14 := &svcapitypes.EvaluationWindow{}
+			switch elem.EvaluationWindow.(type) {
+			case *svcsdktypes.EvaluationWindowMemberSlidingWindow:
+				f14f0 := elem.EvaluationWindow.(*svcsdktypes.EvaluationWindowMemberSlidingWindow)
+				if f14f0 != nil {
+					f14f0f0 := map[string]*string{}
+					f14.SlidingWindow = f14f0f0
+				}
+			case *svcsdktypes.EvaluationWindowMemberWallClockWindow:
+				f14f1 := elem.EvaluationWindow.(*svcsdktypes.EvaluationWindowMemberWallClockWindow)
+				if f14f1 != nil {
+					f14f1f1 := &svcapitypes.WallClockWindow{}
+					if f14f1.Value.Timezone != nil {
+						f14f1f1.Timezone = f14f1.Value.Timezone
+					}
+					f14.WallClockWindow = f14f1f1
+				}
+			}
+			ko.Spec.EvaluationWindow = f14
+		} else {
+			ko.Spec.EvaluationWindow = nil
 		}
 		if elem.ExtendedStatistic != nil {
 			ko.Spec.ExtendedStatistic = elem.ExtendedStatistic
@@ -163,69 +217,69 @@ func (rm *resourceManager) sdkFind(
 			ko.Spec.MetricName = nil
 		}
 		if elem.Metrics != nil {
-			f15 := []*svcapitypes.MetricDataQuery{}
-			for _, f15iter := range elem.Metrics {
-				f15elem := &svcapitypes.MetricDataQuery{}
-				if f15iter.AccountId != nil {
-					f15elem.AccountID = f15iter.AccountId
+			f18 := []*svcapitypes.MetricDataQuery{}
+			for _, f18iter := range elem.Metrics {
+				f18elem := &svcapitypes.MetricDataQuery{}
+				if f18iter.AccountId != nil {
+					f18elem.AccountID = f18iter.AccountId
 				}
-				if f15iter.Expression != nil {
-					f15elem.Expression = f15iter.Expression
+				if f18iter.Expression != nil {
+					f18elem.Expression = f18iter.Expression
 				}
-				if f15iter.Id != nil {
-					f15elem.ID = f15iter.Id
+				if f18iter.Id != nil {
+					f18elem.ID = f18iter.Id
 				}
-				if f15iter.Label != nil {
-					f15elem.Label = f15iter.Label
+				if f18iter.Label != nil {
+					f18elem.Label = f18iter.Label
 				}
-				if f15iter.MetricStat != nil {
-					f15elemf4 := &svcapitypes.MetricStat{}
-					if f15iter.MetricStat.Metric != nil {
-						f15elemf4f0 := &svcapitypes.Metric{}
-						if f15iter.MetricStat.Metric.Dimensions != nil {
-							f15elemf4f0f0 := []*svcapitypes.Dimension{}
-							for _, f15elemf4f0f0iter := range f15iter.MetricStat.Metric.Dimensions {
-								f15elemf4f0f0elem := &svcapitypes.Dimension{}
-								if f15elemf4f0f0iter.Name != nil {
-									f15elemf4f0f0elem.Name = f15elemf4f0f0iter.Name
+				if f18iter.MetricStat != nil {
+					f18elemf4 := &svcapitypes.MetricStat{}
+					if f18iter.MetricStat.Metric != nil {
+						f18elemf4f0 := &svcapitypes.Metric{}
+						if f18iter.MetricStat.Metric.Dimensions != nil {
+							f18elemf4f0f0 := []*svcapitypes.Dimension{}
+							for _, f18elemf4f0f0iter := range f18iter.MetricStat.Metric.Dimensions {
+								f18elemf4f0f0elem := &svcapitypes.Dimension{}
+								if f18elemf4f0f0iter.Name != nil {
+									f18elemf4f0f0elem.Name = f18elemf4f0f0iter.Name
 								}
-								if f15elemf4f0f0iter.Value != nil {
-									f15elemf4f0f0elem.Value = f15elemf4f0f0iter.Value
+								if f18elemf4f0f0iter.Value != nil {
+									f18elemf4f0f0elem.Value = f18elemf4f0f0iter.Value
 								}
-								f15elemf4f0f0 = append(f15elemf4f0f0, f15elemf4f0f0elem)
+								f18elemf4f0f0 = append(f18elemf4f0f0, f18elemf4f0f0elem)
 							}
-							f15elemf4f0.Dimensions = f15elemf4f0f0
+							f18elemf4f0.Dimensions = f18elemf4f0f0
 						}
-						if f15iter.MetricStat.Metric.MetricName != nil {
-							f15elemf4f0.MetricName = f15iter.MetricStat.Metric.MetricName
+						if f18iter.MetricStat.Metric.MetricName != nil {
+							f18elemf4f0.MetricName = f18iter.MetricStat.Metric.MetricName
 						}
-						if f15iter.MetricStat.Metric.Namespace != nil {
-							f15elemf4f0.Namespace = f15iter.MetricStat.Metric.Namespace
+						if f18iter.MetricStat.Metric.Namespace != nil {
+							f18elemf4f0.Namespace = f18iter.MetricStat.Metric.Namespace
 						}
-						f15elemf4.Metric = f15elemf4f0
+						f18elemf4.Metric = f18elemf4f0
 					}
-					if f15iter.MetricStat.Period != nil {
-						periodCopy := int64(*f15iter.MetricStat.Period)
-						f15elemf4.Period = &periodCopy
+					if f18iter.MetricStat.Period != nil {
+						periodCopy := int64(*f18iter.MetricStat.Period)
+						f18elemf4.Period = &periodCopy
 					}
-					if f15iter.MetricStat.Stat != nil {
-						f15elemf4.Stat = f15iter.MetricStat.Stat
+					if f18iter.MetricStat.Stat != nil {
+						f18elemf4.Stat = f18iter.MetricStat.Stat
 					}
-					if f15iter.MetricStat.Unit != "" {
-						f15elemf4.Unit = aws.String(string(f15iter.MetricStat.Unit))
+					if f18iter.MetricStat.Unit != "" {
+						f18elemf4.Unit = aws.String(string(f18iter.MetricStat.Unit))
 					}
-					f15elem.MetricStat = f15elemf4
+					f18elem.MetricStat = f18elemf4
 				}
-				if f15iter.Period != nil {
-					periodCopy := int64(*f15iter.Period)
-					f15elem.Period = &periodCopy
+				if f18iter.Period != nil {
+					periodCopy := int64(*f18iter.Period)
+					f18elem.Period = &periodCopy
 				}
-				if f15iter.ReturnData != nil {
-					f15elem.ReturnData = f15iter.ReturnData
+				if f18iter.ReturnData != nil {
+					f18elem.ReturnData = f18iter.ReturnData
 				}
-				f15 = append(f15, f15elem)
+				f18 = append(f18, f18elem)
 			}
-			ko.Spec.Metrics = f15
+			ko.Spec.Metrics = f18
 		} else {
 			ko.Spec.Metrics = nil
 		}
@@ -380,6 +434,48 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.EvaluateLowSampleCountPercentile != nil {
 		res.EvaluateLowSampleCountPercentile = r.ko.Spec.EvaluateLowSampleCountPercentile
 	}
+	if r.ko.Spec.EvaluationCriteria != nil {
+		var f8 svcsdktypes.EvaluationCriteria
+		isInterfaceSet := false
+		if r.ko.Spec.EvaluationCriteria.PromQLCriteria != nil {
+			if isInterfaceSet {
+				return nil, ackerr.NewTerminalError(fmt.Errorf("can only set one of the members for PromQLCriteria"))
+			}
+			f8f0Parent := &svcsdktypes.EvaluationCriteriaMemberPromQLCriteria{}
+			f8f0 := &svcsdktypes.AlarmPromQLCriteria{}
+			if r.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod != nil {
+				pendingPeriodCopy0 := *r.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod
+				if pendingPeriodCopy0 > math.MaxInt32 || pendingPeriodCopy0 < math.MinInt32 {
+					return nil, fmt.Errorf("error: field PendingPeriod is of type int32")
+				}
+				pendingPeriodCopy := int32(pendingPeriodCopy0)
+				f8f0.PendingPeriod = &pendingPeriodCopy
+			}
+			if r.ko.Spec.EvaluationCriteria.PromQLCriteria.Query != nil {
+				f8f0.Query = r.ko.Spec.EvaluationCriteria.PromQLCriteria.Query
+			}
+			if r.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod != nil {
+				recoveryPeriodCopy0 := *r.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod
+				if recoveryPeriodCopy0 > math.MaxInt32 || recoveryPeriodCopy0 < math.MinInt32 {
+					return nil, fmt.Errorf("error: field RecoveryPeriod is of type int32")
+				}
+				recoveryPeriodCopy := int32(recoveryPeriodCopy0)
+				f8f0.RecoveryPeriod = &recoveryPeriodCopy
+			}
+			f8f0Parent.Value = *f8f0
+			f8 = f8f0Parent
+			isInterfaceSet = true
+		}
+		res.EvaluationCriteria = f8
+	}
+	if r.ko.Spec.EvaluationInterval != nil {
+		evaluationIntervalCopy0 := *r.ko.Spec.EvaluationInterval
+		if evaluationIntervalCopy0 > math.MaxInt32 || evaluationIntervalCopy0 < math.MinInt32 {
+			return nil, fmt.Errorf("error: field EvaluationInterval is of type int32")
+		}
+		evaluationIntervalCopy := int32(evaluationIntervalCopy0)
+		res.EvaluationInterval = &evaluationIntervalCopy
+	}
 	if r.ko.Spec.EvaluationPeriods != nil {
 		evaluationPeriodsCopy0 := *r.ko.Spec.EvaluationPeriods
 		if evaluationPeriodsCopy0 > math.MaxInt32 || evaluationPeriodsCopy0 < math.MinInt32 {
@@ -387,6 +483,34 @@ func (rm *resourceManager) newCreateRequestPayload(
 		}
 		evaluationPeriodsCopy := int32(evaluationPeriodsCopy0)
 		res.EvaluationPeriods = &evaluationPeriodsCopy
+	}
+	if r.ko.Spec.EvaluationWindow != nil {
+		var f11 svcsdktypes.EvaluationWindow
+		isInterfaceSet := false
+		if r.ko.Spec.EvaluationWindow.SlidingWindow != nil {
+			if isInterfaceSet {
+				return nil, ackerr.NewTerminalError(fmt.Errorf("can only set one of the members for SlidingWindow"))
+			}
+			f11f0Parent := &svcsdktypes.EvaluationWindowMemberSlidingWindow{}
+			f11f0 := &svcsdktypes.SlidingWindow{}
+			f11f0Parent.Value = *f11f0
+			f11 = f11f0Parent
+			isInterfaceSet = true
+		}
+		if r.ko.Spec.EvaluationWindow.WallClockWindow != nil {
+			if isInterfaceSet {
+				return nil, ackerr.NewTerminalError(fmt.Errorf("can only set one of the members for WallClockWindow"))
+			}
+			f11f1Parent := &svcsdktypes.EvaluationWindowMemberWallClockWindow{}
+			f11f1 := &svcsdktypes.WallClockWindow{}
+			if r.ko.Spec.EvaluationWindow.WallClockWindow.Timezone != nil {
+				f11f1.Timezone = r.ko.Spec.EvaluationWindow.WallClockWindow.Timezone
+			}
+			f11f1Parent.Value = *f11f1
+			f11 = f11f1Parent
+			isInterfaceSet = true
+		}
+		res.EvaluationWindow = f11
 	}
 	if r.ko.Spec.ExtendedStatistic != nil {
 		res.ExtendedStatistic = r.ko.Spec.ExtendedStatistic
@@ -398,77 +522,77 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.MetricName = r.ko.Spec.MetricName
 	}
 	if r.ko.Spec.Metrics != nil {
-		f12 := []svcsdktypes.MetricDataQuery{}
-		for _, f12iter := range r.ko.Spec.Metrics {
-			f12elem := &svcsdktypes.MetricDataQuery{}
-			if f12iter.AccountID != nil {
-				f12elem.AccountId = f12iter.AccountID
+		f15 := []svcsdktypes.MetricDataQuery{}
+		for _, f15iter := range r.ko.Spec.Metrics {
+			f15elem := &svcsdktypes.MetricDataQuery{}
+			if f15iter.AccountID != nil {
+				f15elem.AccountId = f15iter.AccountID
 			}
-			if f12iter.Expression != nil {
-				f12elem.Expression = f12iter.Expression
+			if f15iter.Expression != nil {
+				f15elem.Expression = f15iter.Expression
 			}
-			if f12iter.ID != nil {
-				f12elem.Id = f12iter.ID
+			if f15iter.ID != nil {
+				f15elem.Id = f15iter.ID
 			}
-			if f12iter.Label != nil {
-				f12elem.Label = f12iter.Label
+			if f15iter.Label != nil {
+				f15elem.Label = f15iter.Label
 			}
-			if f12iter.MetricStat != nil {
-				f12elemf4 := &svcsdktypes.MetricStat{}
-				if f12iter.MetricStat.Metric != nil {
-					f12elemf4f0 := &svcsdktypes.Metric{}
-					if f12iter.MetricStat.Metric.Dimensions != nil {
-						f12elemf4f0f0 := []svcsdktypes.Dimension{}
-						for _, f12elemf4f0f0iter := range f12iter.MetricStat.Metric.Dimensions {
-							f12elemf4f0f0elem := &svcsdktypes.Dimension{}
-							if f12elemf4f0f0iter.Name != nil {
-								f12elemf4f0f0elem.Name = f12elemf4f0f0iter.Name
+			if f15iter.MetricStat != nil {
+				f15elemf4 := &svcsdktypes.MetricStat{}
+				if f15iter.MetricStat.Metric != nil {
+					f15elemf4f0 := &svcsdktypes.Metric{}
+					if f15iter.MetricStat.Metric.Dimensions != nil {
+						f15elemf4f0f0 := []svcsdktypes.Dimension{}
+						for _, f15elemf4f0f0iter := range f15iter.MetricStat.Metric.Dimensions {
+							f15elemf4f0f0elem := &svcsdktypes.Dimension{}
+							if f15elemf4f0f0iter.Name != nil {
+								f15elemf4f0f0elem.Name = f15elemf4f0f0iter.Name
 							}
-							if f12elemf4f0f0iter.Value != nil {
-								f12elemf4f0f0elem.Value = f12elemf4f0f0iter.Value
+							if f15elemf4f0f0iter.Value != nil {
+								f15elemf4f0f0elem.Value = f15elemf4f0f0iter.Value
 							}
-							f12elemf4f0f0 = append(f12elemf4f0f0, *f12elemf4f0f0elem)
+							f15elemf4f0f0 = append(f15elemf4f0f0, *f15elemf4f0f0elem)
 						}
-						f12elemf4f0.Dimensions = f12elemf4f0f0
+						f15elemf4f0.Dimensions = f15elemf4f0f0
 					}
-					if f12iter.MetricStat.Metric.MetricName != nil {
-						f12elemf4f0.MetricName = f12iter.MetricStat.Metric.MetricName
+					if f15iter.MetricStat.Metric.MetricName != nil {
+						f15elemf4f0.MetricName = f15iter.MetricStat.Metric.MetricName
 					}
-					if f12iter.MetricStat.Metric.Namespace != nil {
-						f12elemf4f0.Namespace = f12iter.MetricStat.Metric.Namespace
+					if f15iter.MetricStat.Metric.Namespace != nil {
+						f15elemf4f0.Namespace = f15iter.MetricStat.Metric.Namespace
 					}
-					f12elemf4.Metric = f12elemf4f0
+					f15elemf4.Metric = f15elemf4f0
 				}
-				if f12iter.MetricStat.Period != nil {
-					periodCopy0 := *f12iter.MetricStat.Period
+				if f15iter.MetricStat.Period != nil {
+					periodCopy0 := *f15iter.MetricStat.Period
 					if periodCopy0 > math.MaxInt32 || periodCopy0 < math.MinInt32 {
 						return nil, fmt.Errorf("error: field Period is of type int32")
 					}
 					periodCopy := int32(periodCopy0)
-					f12elemf4.Period = &periodCopy
+					f15elemf4.Period = &periodCopy
 				}
-				if f12iter.MetricStat.Stat != nil {
-					f12elemf4.Stat = f12iter.MetricStat.Stat
+				if f15iter.MetricStat.Stat != nil {
+					f15elemf4.Stat = f15iter.MetricStat.Stat
 				}
-				if f12iter.MetricStat.Unit != nil {
-					f12elemf4.Unit = svcsdktypes.StandardUnit(*f12iter.MetricStat.Unit)
+				if f15iter.MetricStat.Unit != nil {
+					f15elemf4.Unit = svcsdktypes.StandardUnit(*f15iter.MetricStat.Unit)
 				}
-				f12elem.MetricStat = f12elemf4
+				f15elem.MetricStat = f15elemf4
 			}
-			if f12iter.Period != nil {
-				periodCopy0 := *f12iter.Period
+			if f15iter.Period != nil {
+				periodCopy0 := *f15iter.Period
 				if periodCopy0 > math.MaxInt32 || periodCopy0 < math.MinInt32 {
 					return nil, fmt.Errorf("error: field Period is of type int32")
 				}
 				periodCopy := int32(periodCopy0)
-				f12elem.Period = &periodCopy
+				f15elem.Period = &periodCopy
 			}
-			if f12iter.ReturnData != nil {
-				f12elem.ReturnData = f12iter.ReturnData
+			if f15iter.ReturnData != nil {
+				f15elem.ReturnData = f15iter.ReturnData
 			}
-			f12 = append(f12, *f12elem)
+			f15 = append(f15, *f15elem)
 		}
-		res.Metrics = f12
+		res.Metrics = f15
 	}
 	if r.ko.Spec.Namespace != nil {
 		res.Namespace = r.ko.Spec.Namespace
@@ -488,18 +612,18 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.Statistic = svcsdktypes.Statistic(*r.ko.Spec.Statistic)
 	}
 	if r.ko.Spec.Tags != nil {
-		f17 := []svcsdktypes.Tag{}
-		for _, f17iter := range r.ko.Spec.Tags {
-			f17elem := &svcsdktypes.Tag{}
-			if f17iter.Key != nil {
-				f17elem.Key = f17iter.Key
+		f20 := []svcsdktypes.Tag{}
+		for _, f20iter := range r.ko.Spec.Tags {
+			f20elem := &svcsdktypes.Tag{}
+			if f20iter.Key != nil {
+				f20elem.Key = f20iter.Key
 			}
-			if f17iter.Value != nil {
-				f17elem.Value = f17iter.Value
+			if f20iter.Value != nil {
+				f20elem.Value = f20iter.Value
 			}
-			f17 = append(f17, *f17elem)
+			f20 = append(f20, *f20elem)
 		}
-		res.Tags = f17
+		res.Tags = f20
 	}
 	if r.ko.Spec.Threshold != nil {
 		res.Threshold = r.ko.Spec.Threshold
@@ -599,6 +723,48 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	if r.ko.Spec.EvaluateLowSampleCountPercentile != nil {
 		res.EvaluateLowSampleCountPercentile = r.ko.Spec.EvaluateLowSampleCountPercentile
 	}
+	if r.ko.Spec.EvaluationCriteria != nil {
+		var f8 svcsdktypes.EvaluationCriteria
+		isInterfaceSet := false
+		if r.ko.Spec.EvaluationCriteria.PromQLCriteria != nil {
+			if isInterfaceSet {
+				return nil, ackerr.NewTerminalError(fmt.Errorf("can only set one of the members for PromQLCriteria"))
+			}
+			f8f0Parent := &svcsdktypes.EvaluationCriteriaMemberPromQLCriteria{}
+			f8f0 := &svcsdktypes.AlarmPromQLCriteria{}
+			if r.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod != nil {
+				pendingPeriodCopy0 := *r.ko.Spec.EvaluationCriteria.PromQLCriteria.PendingPeriod
+				if pendingPeriodCopy0 > math.MaxInt32 || pendingPeriodCopy0 < math.MinInt32 {
+					return nil, fmt.Errorf("error: field PendingPeriod is of type int32")
+				}
+				pendingPeriodCopy := int32(pendingPeriodCopy0)
+				f8f0.PendingPeriod = &pendingPeriodCopy
+			}
+			if r.ko.Spec.EvaluationCriteria.PromQLCriteria.Query != nil {
+				f8f0.Query = r.ko.Spec.EvaluationCriteria.PromQLCriteria.Query
+			}
+			if r.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod != nil {
+				recoveryPeriodCopy0 := *r.ko.Spec.EvaluationCriteria.PromQLCriteria.RecoveryPeriod
+				if recoveryPeriodCopy0 > math.MaxInt32 || recoveryPeriodCopy0 < math.MinInt32 {
+					return nil, fmt.Errorf("error: field RecoveryPeriod is of type int32")
+				}
+				recoveryPeriodCopy := int32(recoveryPeriodCopy0)
+				f8f0.RecoveryPeriod = &recoveryPeriodCopy
+			}
+			f8f0Parent.Value = *f8f0
+			f8 = f8f0Parent
+			isInterfaceSet = true
+		}
+		res.EvaluationCriteria = f8
+	}
+	if r.ko.Spec.EvaluationInterval != nil {
+		evaluationIntervalCopy0 := *r.ko.Spec.EvaluationInterval
+		if evaluationIntervalCopy0 > math.MaxInt32 || evaluationIntervalCopy0 < math.MinInt32 {
+			return nil, fmt.Errorf("error: field EvaluationInterval is of type int32")
+		}
+		evaluationIntervalCopy := int32(evaluationIntervalCopy0)
+		res.EvaluationInterval = &evaluationIntervalCopy
+	}
 	if r.ko.Spec.EvaluationPeriods != nil {
 		evaluationPeriodsCopy0 := *r.ko.Spec.EvaluationPeriods
 		if evaluationPeriodsCopy0 > math.MaxInt32 || evaluationPeriodsCopy0 < math.MinInt32 {
@@ -606,6 +772,34 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		}
 		evaluationPeriodsCopy := int32(evaluationPeriodsCopy0)
 		res.EvaluationPeriods = &evaluationPeriodsCopy
+	}
+	if r.ko.Spec.EvaluationWindow != nil {
+		var f11 svcsdktypes.EvaluationWindow
+		isInterfaceSet := false
+		if r.ko.Spec.EvaluationWindow.SlidingWindow != nil {
+			if isInterfaceSet {
+				return nil, ackerr.NewTerminalError(fmt.Errorf("can only set one of the members for SlidingWindow"))
+			}
+			f11f0Parent := &svcsdktypes.EvaluationWindowMemberSlidingWindow{}
+			f11f0 := &svcsdktypes.SlidingWindow{}
+			f11f0Parent.Value = *f11f0
+			f11 = f11f0Parent
+			isInterfaceSet = true
+		}
+		if r.ko.Spec.EvaluationWindow.WallClockWindow != nil {
+			if isInterfaceSet {
+				return nil, ackerr.NewTerminalError(fmt.Errorf("can only set one of the members for WallClockWindow"))
+			}
+			f11f1Parent := &svcsdktypes.EvaluationWindowMemberWallClockWindow{}
+			f11f1 := &svcsdktypes.WallClockWindow{}
+			if r.ko.Spec.EvaluationWindow.WallClockWindow.Timezone != nil {
+				f11f1.Timezone = r.ko.Spec.EvaluationWindow.WallClockWindow.Timezone
+			}
+			f11f1Parent.Value = *f11f1
+			f11 = f11f1Parent
+			isInterfaceSet = true
+		}
+		res.EvaluationWindow = f11
 	}
 	if r.ko.Spec.ExtendedStatistic != nil {
 		res.ExtendedStatistic = r.ko.Spec.ExtendedStatistic
@@ -617,77 +811,77 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		res.MetricName = r.ko.Spec.MetricName
 	}
 	if r.ko.Spec.Metrics != nil {
-		f12 := []svcsdktypes.MetricDataQuery{}
-		for _, f12iter := range r.ko.Spec.Metrics {
-			f12elem := &svcsdktypes.MetricDataQuery{}
-			if f12iter.AccountID != nil {
-				f12elem.AccountId = f12iter.AccountID
+		f15 := []svcsdktypes.MetricDataQuery{}
+		for _, f15iter := range r.ko.Spec.Metrics {
+			f15elem := &svcsdktypes.MetricDataQuery{}
+			if f15iter.AccountID != nil {
+				f15elem.AccountId = f15iter.AccountID
 			}
-			if f12iter.Expression != nil {
-				f12elem.Expression = f12iter.Expression
+			if f15iter.Expression != nil {
+				f15elem.Expression = f15iter.Expression
 			}
-			if f12iter.ID != nil {
-				f12elem.Id = f12iter.ID
+			if f15iter.ID != nil {
+				f15elem.Id = f15iter.ID
 			}
-			if f12iter.Label != nil {
-				f12elem.Label = f12iter.Label
+			if f15iter.Label != nil {
+				f15elem.Label = f15iter.Label
 			}
-			if f12iter.MetricStat != nil {
-				f12elemf4 := &svcsdktypes.MetricStat{}
-				if f12iter.MetricStat.Metric != nil {
-					f12elemf4f0 := &svcsdktypes.Metric{}
-					if f12iter.MetricStat.Metric.Dimensions != nil {
-						f12elemf4f0f0 := []svcsdktypes.Dimension{}
-						for _, f12elemf4f0f0iter := range f12iter.MetricStat.Metric.Dimensions {
-							f12elemf4f0f0elem := &svcsdktypes.Dimension{}
-							if f12elemf4f0f0iter.Name != nil {
-								f12elemf4f0f0elem.Name = f12elemf4f0f0iter.Name
+			if f15iter.MetricStat != nil {
+				f15elemf4 := &svcsdktypes.MetricStat{}
+				if f15iter.MetricStat.Metric != nil {
+					f15elemf4f0 := &svcsdktypes.Metric{}
+					if f15iter.MetricStat.Metric.Dimensions != nil {
+						f15elemf4f0f0 := []svcsdktypes.Dimension{}
+						for _, f15elemf4f0f0iter := range f15iter.MetricStat.Metric.Dimensions {
+							f15elemf4f0f0elem := &svcsdktypes.Dimension{}
+							if f15elemf4f0f0iter.Name != nil {
+								f15elemf4f0f0elem.Name = f15elemf4f0f0iter.Name
 							}
-							if f12elemf4f0f0iter.Value != nil {
-								f12elemf4f0f0elem.Value = f12elemf4f0f0iter.Value
+							if f15elemf4f0f0iter.Value != nil {
+								f15elemf4f0f0elem.Value = f15elemf4f0f0iter.Value
 							}
-							f12elemf4f0f0 = append(f12elemf4f0f0, *f12elemf4f0f0elem)
+							f15elemf4f0f0 = append(f15elemf4f0f0, *f15elemf4f0f0elem)
 						}
-						f12elemf4f0.Dimensions = f12elemf4f0f0
+						f15elemf4f0.Dimensions = f15elemf4f0f0
 					}
-					if f12iter.MetricStat.Metric.MetricName != nil {
-						f12elemf4f0.MetricName = f12iter.MetricStat.Metric.MetricName
+					if f15iter.MetricStat.Metric.MetricName != nil {
+						f15elemf4f0.MetricName = f15iter.MetricStat.Metric.MetricName
 					}
-					if f12iter.MetricStat.Metric.Namespace != nil {
-						f12elemf4f0.Namespace = f12iter.MetricStat.Metric.Namespace
+					if f15iter.MetricStat.Metric.Namespace != nil {
+						f15elemf4f0.Namespace = f15iter.MetricStat.Metric.Namespace
 					}
-					f12elemf4.Metric = f12elemf4f0
+					f15elemf4.Metric = f15elemf4f0
 				}
-				if f12iter.MetricStat.Period != nil {
-					periodCopy0 := *f12iter.MetricStat.Period
+				if f15iter.MetricStat.Period != nil {
+					periodCopy0 := *f15iter.MetricStat.Period
 					if periodCopy0 > math.MaxInt32 || periodCopy0 < math.MinInt32 {
 						return nil, fmt.Errorf("error: field Period is of type int32")
 					}
 					periodCopy := int32(periodCopy0)
-					f12elemf4.Period = &periodCopy
+					f15elemf4.Period = &periodCopy
 				}
-				if f12iter.MetricStat.Stat != nil {
-					f12elemf4.Stat = f12iter.MetricStat.Stat
+				if f15iter.MetricStat.Stat != nil {
+					f15elemf4.Stat = f15iter.MetricStat.Stat
 				}
-				if f12iter.MetricStat.Unit != nil {
-					f12elemf4.Unit = svcsdktypes.StandardUnit(*f12iter.MetricStat.Unit)
+				if f15iter.MetricStat.Unit != nil {
+					f15elemf4.Unit = svcsdktypes.StandardUnit(*f15iter.MetricStat.Unit)
 				}
-				f12elem.MetricStat = f12elemf4
+				f15elem.MetricStat = f15elemf4
 			}
-			if f12iter.Period != nil {
-				periodCopy0 := *f12iter.Period
+			if f15iter.Period != nil {
+				periodCopy0 := *f15iter.Period
 				if periodCopy0 > math.MaxInt32 || periodCopy0 < math.MinInt32 {
 					return nil, fmt.Errorf("error: field Period is of type int32")
 				}
 				periodCopy := int32(periodCopy0)
-				f12elem.Period = &periodCopy
+				f15elem.Period = &periodCopy
 			}
-			if f12iter.ReturnData != nil {
-				f12elem.ReturnData = f12iter.ReturnData
+			if f15iter.ReturnData != nil {
+				f15elem.ReturnData = f15iter.ReturnData
 			}
-			f12 = append(f12, *f12elem)
+			f15 = append(f15, *f15elem)
 		}
-		res.Metrics = f12
+		res.Metrics = f15
 	}
 	if r.ko.Spec.Namespace != nil {
 		res.Namespace = r.ko.Spec.Namespace
@@ -707,18 +901,18 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		res.Statistic = svcsdktypes.Statistic(*r.ko.Spec.Statistic)
 	}
 	if r.ko.Spec.Tags != nil {
-		f17 := []svcsdktypes.Tag{}
-		for _, f17iter := range r.ko.Spec.Tags {
-			f17elem := &svcsdktypes.Tag{}
-			if f17iter.Key != nil {
-				f17elem.Key = f17iter.Key
+		f20 := []svcsdktypes.Tag{}
+		for _, f20iter := range r.ko.Spec.Tags {
+			f20elem := &svcsdktypes.Tag{}
+			if f20iter.Key != nil {
+				f20elem.Key = f20iter.Key
 			}
-			if f17iter.Value != nil {
-				f17elem.Value = f17iter.Value
+			if f20iter.Value != nil {
+				f20elem.Value = f20iter.Value
 			}
-			f17 = append(f17, *f17elem)
+			f20 = append(f20, *f20elem)
 		}
-		res.Tags = f17
+		res.Tags = f20
 	}
 	if r.ko.Spec.Threshold != nil {
 		res.Threshold = r.ko.Spec.Threshold
