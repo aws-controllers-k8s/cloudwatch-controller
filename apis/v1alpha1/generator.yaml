@@ -78,6 +78,8 @@ resources:
         template_path: hooks/metricalarm/sdk_read_many_post_set_output.go.tpl
       sdk_delete_post_build_request:
         template_path: hooks/metricalarm/sdk_delete_post_build_request.go.tpl
+      sdk_update_pre_build_request:
+        template_path: hooks/metricalarm/sdk_update_pre_build_request.go.tpl
   Dashboard:
     fields:
       DashboardName:
