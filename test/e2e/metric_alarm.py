@@ -83,7 +83,7 @@ def get_tags(metric_alarm_arn):
     c = boto3.client('cloudwatch')
     try:
         resp = c.list_tags_for_resource(
-            ResourceName=metric_alarm_arn,
+            ResourceARN=metric_alarm_arn,
         )
         return resp['Tags']
     except c.exceptions.ResourceNotFoundException:

@@ -64,6 +64,8 @@ resources:
       Name:
         is_primary_key: true
         is_required: true
+      AlarmArn:
+        is_arn: true
     renames:
       operations:
         PutMetricAlarm:
@@ -72,8 +74,12 @@ resources:
     hooks:
       sdk_read_many_post_build_request:
         template_path: hooks/metricalarm/sdk_read_many_post_build_request.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/metricalarm/sdk_read_many_post_set_output.go.tpl
       sdk_delete_post_build_request:
         template_path: hooks/metricalarm/sdk_delete_post_build_request.go.tpl
+      sdk_update_pre_build_request:
+        template_path: hooks/metricalarm/sdk_update_pre_build_request.go.tpl
   Dashboard:
     fields:
       DashboardName:
