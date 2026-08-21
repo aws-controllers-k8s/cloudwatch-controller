@@ -104,6 +104,13 @@ func (rm *resourceManager) sdkFind(
 		} else {
 			ko.Spec.AlarmActions = nil
 		}
+		if elem.AlarmArn != nil {
+			if ko.Status.ACKResourceMetadata == nil {
+				ko.Status.ACKResourceMetadata = &ackv1alpha1.ResourceMetadata{}
+			}
+			tmpARN := ackv1alpha1.AWSResourceName(*elem.AlarmArn)
+			ko.Status.ACKResourceMetadata.ARN = &tmpARN
+		}
 		if elem.AlarmDescription != nil {
 			ko.Spec.AlarmDescription = elem.AlarmDescription
 		} else {
@@ -332,6 +339,23 @@ func (rm *resourceManager) sdkFind(
 	}
 
 	rm.setStatusDefaults(ko)
+	// DescribeAlarms does not return tags — fetch them separately.
+	if ko.Status.ACKResourceMetadata != nil && ko.Status.ACKResourceMetadata.ARN != nil {
+		tagsInput := &svcsdk.ListTagsForResourceInput{
+			ResourceARN: aws.String(string(*ko.Status.ACKResourceMetadata.ARN)),
+		}
+		tagsResp, tagsErr := rm.sdkapi.ListTagsForResource(ctx, tagsInput)
+		rm.metrics.RecordAPICall("READ_MANY", "ListTagsForResource", tagsErr)
+		if tagsErr != nil {
+			return nil, tagsErr
+		}
+		ko.Spec.Tags = nil
+		for _, t := range tagsResp.Tags {
+			tCopy := svcapitypes.Tag{Key: t.Key, Value: t.Value}
+			ko.Spec.Tags = append(ko.Spec.Tags, &tCopy)
+		}
+	}
+
 	return &resource{ko}, nil
 }
 
@@ -654,6 +678,15 @@ func (rm *resourceManager) sdkUpdate(
 	defer func() {
 		exit(err)
 	}()
+	if delta.DifferentAt("Spec.Tags") {
+		if err = rm.syncTags(ctx, desired, latest); err != nil {
+			return nil, err
+		}
+	}
+	if !delta.DifferentExcept("Spec.Tags") {
+		return desired, nil
+	}
+
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
 		return nil, err

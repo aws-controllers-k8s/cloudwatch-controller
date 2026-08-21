@@ -20,6 +20,7 @@ import pytest
 
 from acktest.k8s import resource as k8s
 from acktest.resources import random_suffix_name
+from acktest import tags
 from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_cloudwatch_resource
 from e2e.replacement_values import REPLACEMENT_VALUES
 from e2e import condition
@@ -31,7 +32,8 @@ CHECK_STATUS_WAIT_SECONDS = 10
 MODIFY_WAIT_AFTER_SECONDS = 10
 DELETE_WAIT_AFTER_SECONDS = 5
 
-def _make_metric_alarm(name_prefix: str, resource_name: str):
+def _make_metric_alarm(name_prefix: str, resource_name: str,
+                       additional_replacements: dict = None):
     """Creates a MetricAlarm from a resource file and deletes it afterwards.
 
     Yields the (reference, custom resource) pair.
@@ -40,6 +42,8 @@ def _make_metric_alarm(name_prefix: str, resource_name: str):
 
     replacements = REPLACEMENT_VALUES.copy()
     replacements["METRIC_ALARM_NAME"] = metric_alarm_name
+    if additional_replacements:
+        replacements.update(additional_replacements)
     resource_data = load_cloudwatch_resource(
         resource_name,
         additional_replacements=replacements,
@@ -83,6 +87,13 @@ def _evaluation_window_metric_alarm():
 def _promql_metric_alarm():
     yield from _make_metric_alarm(
         "ack-test-promql-alarm", "metric_alarm_promql")
+
+
+@pytest.fixture
+def _tagged_metric_alarm():
+    yield from _make_metric_alarm(
+        "ack-test-tagged-alarm", "metric_alarm_with_tags",
+        additional_replacements={"TAG_VALUE": "test"})
 
 
 @service_marker
@@ -164,6 +175,93 @@ class TestMetricAlarmEvaluationWindow:
             f"Expected WallClockWindow after update, got {updated_window}"
         assert updated_window['WallClockWindow'].get('Timezone') == 'UTC+05:30', \
             f"Expected UTC+05:30 after update, got {updated_window['WallClockWindow']}"
+
+
+@service_marker
+class TestMetricAlarmTags:
+    """Covers tag reconciliation on a MetricAlarm.
+
+    PutMetricAlarm ignores the Tags field when updating an existing alarm, so
+    tag changes are synced via the dedicated TagResource/UntagResource APIs.
+    Kept on its own resource so a tagging regression cannot break the canary
+    coverage for basic MetricAlarm CRUD.
+    """
+
+    def test_tag_sync(self, _tagged_metric_alarm):
+        (ref, cr) = _tagged_metric_alarm
+        metric_alarm_name = ref.name
+
+        time.sleep(CHECK_STATUS_WAIT_SECONDS)
+        condition.assert_synced(ref)
+
+        assert metric_alarm.exists(metric_alarm_name)
+
+        # The ARN is required to list tags in the AWS API.
+        cr = k8s.get_resource(ref)
+        metric_alarm_arn = cr["status"]["ackResourceMetadata"]["arn"]
+
+        # Verify the create-time tag via the CR. Spec tags use the lowercase
+        # key/value member names.
+        tags.assert_present(
+            expected={"env": "test"},
+            actual=cr["spec"].get("tags"),
+            key_member_name="key",
+            value_member_name="value",
+        )
+
+        # Verify via the AWS API. assert_present tolerates the default
+        # (services.k8s.aws/*) tags the controller also applies.
+        aws_tags = metric_alarm.get_tags(metric_alarm_arn)
+        tags.assert_present(expected={"env": "test"}, actual=aws_tags)
+        # The controller must also apply the ACK system tags on create.
+        tags.assert_ack_system_tags(tags=aws_tags)
+
+        # Add a tag and update the value of the existing tag. Exercises
+        # TagResource (PutMetricAlarm would silently drop these).
+        updates = {
+            "spec": {
+                "tags": [
+                    {"key": "env", "value": "prod"},
+                    {"key": "team", "value": "platform"},
+                ]
+            }
+        }
+        k8s.patch_custom_resource(ref, updates)
+        k8s.wait_resource_consumed_by_controller(ref)
+        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
+        condition.assert_synced(ref)
+
+        aws_tags = metric_alarm.get_tags(metric_alarm_arn)
+        tags.assert_present(
+            expected={"env": "prod", "team": "platform"},
+            actual=aws_tags,
+        )
+        # The ACK system tags must survive the TagResource call.
+        tags.assert_ack_system_tags(tags=aws_tags)
+
+        # Remove a tag. Exercises UntagResource.
+        updates = {
+            "spec": {
+                "tags": [
+                    {"key": "env", "value": "prod"},
+                ]
+            }
+        }
+        k8s.patch_custom_resource(ref, updates)
+        k8s.wait_resource_consumed_by_controller(ref)
+        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
+        condition.assert_synced(ref)
+
+        # Ignoring the ACK system tags, env=prod must be the only tag left -
+        # this confirms both that team was removed and env=prod was retained.
+        aws_tags = metric_alarm.get_tags(metric_alarm_arn)
+        tags.assert_equal_without_ack_tags(
+            expected={"env": "prod"},
+            actual=aws_tags,
+        )
+        # The ACK system tags must survive the UntagResource call - only the
+        # user-managed "team" tag should have been removed.
+        tags.assert_ack_system_tags(tags=aws_tags)
 
 
 @service_marker
