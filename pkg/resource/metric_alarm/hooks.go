@@ -20,8 +20,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	svcsdk "github.com/aws/aws-sdk-go-v2/service/cloudwatch"
 	svcsdktypes "github.com/aws/aws-sdk-go-v2/service/cloudwatch/types"
-
-	svcapitypes "github.com/aws-controllers-k8s/cloudwatch-controller/apis/v1alpha1"
 )
 
 // syncTags reconciles the tags on a MetricAlarm by calling TagResource for tags
@@ -54,14 +52,12 @@ func (rm *resourceManager) syncTags(
 	var addTags []svcsdktypes.Tag
 	for k, v := range desiredMap {
 		if latestV, ok := latestMap[k]; !ok || latestV != v {
-			k, v := k, v
-			addTags = append(addTags, svcsdktypes.Tag{Key: &k, Value: &v})
+			addTags = append(addTags, svcsdktypes.Tag{Key: aws.String(k), Value: aws.String(v)})
 		}
 	}
 	var removeTags []string
 	for k := range latestMap {
 		if _, ok := desiredMap[k]; !ok {
-			k := k
 			removeTags = append(removeTags, k)
 		}
 	}
@@ -100,6 +96,3 @@ func (rm *resourceManager) syncTags(
 
 	return nil
 }
-
-// Ensure unused import is used
-var _ = svcapitypes.MetricAlarm{}
