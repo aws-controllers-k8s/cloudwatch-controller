@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/aws-controllers-k8s/firehose-controller v0.3.0
 	github.com/aws-controllers-k8s/iam-controller v1.7.2
-	github.com/aws-controllers-k8s/runtime v0.62.0
+	github.com/aws-controllers-k8s/runtime v0.63.0
 	github.com/aws/aws-sdk-go-v2 v1.43.0
 	github.com/aws/aws-sdk-go-v2/service/cloudwatch v1.65.0
 	github.com/aws/smithy-go v1.27.3
