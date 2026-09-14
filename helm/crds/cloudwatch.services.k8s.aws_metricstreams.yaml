@@ -138,9 +138,9 @@ spec:
                   be in the same account as the metric stream. This IAM role must include the
                   following permissions:
 
-                    - firehose:PutRecord
+                     * firehose:PutRecord
 
-                    - firehose:PutRecordBatch
+                     * firehose:PutRecordBatch
                 type: string
               roleRef:
                 description: "AWSResourceReferenceWrapper provides a wrapper around

@@ -55,45 +55,45 @@ spec:
 
                   EC2 actions:
 
-                    - arn:aws:automate:region:ec2:stop
+                     * arn:aws:automate:region:ec2:stop
 
-                    - arn:aws:automate:region:ec2:terminate
+                     * arn:aws:automate:region:ec2:terminate
 
-                    - arn:aws:automate:region:ec2:reboot
+                     * arn:aws:automate:region:ec2:reboot
 
-                    - arn:aws:automate:region:ec2:recover
+                     * arn:aws:automate:region:ec2:recover
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
 
                   Autoscaling action:
 
-                    - arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
+                     * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
 
                   Lambda actions:
 
-                    - Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
+                     * Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
 
-                    - Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
+                     * Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
 
-                    - Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
+                     * Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
 
                   SNS notification action:
 
-                    - arn:aws:sns:region:account-id:sns-topic-name
+                     * arn:aws:sns:region:account-id:sns-topic-name
 
                   SSM integration actions:
 
-                    - arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
+                     * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
 
-                    - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+                     * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
 
-                  # Start a Amazon Q Developer operational investigation
+                  Start a Amazon Q Developer operational investigation
 
                   arn:aws:aiops:region:account-id:investigation-group:investigation-group-id
                 items:
@@ -251,27 +251,27 @@ spec:
 
                   If you specify ExtendedStatistic, the following are valid values:
 
-                    - p90
+                     * p90
 
-                    - tm90
+                     * tm90
 
-                    - tc90
+                     * tc90
 
-                    - ts90
+                     * ts90
 
-                    - wm90
+                     * wm90
 
-                    - IQM
+                     * IQM
 
-                    - PR(n:m) where n and m are values of the metric
+                     * PR(n:m) where n and m are values of the metric
 
-                    - TC(X%:X%) where X is between 10 and 90 inclusive.
+                     * TC(X%:X%) where X is between 10 and 90 inclusive.
 
-                    - TM(X%:X%) where X is between 10 and 90 inclusive.
+                     * TM(X%:X%) where X is between 10 and 90 inclusive.
 
-                    - TS(X%:X%) where X is between 10 and 90 inclusive.
+                     * TS(X%:X%) where X is between 10 and 90 inclusive.
 
-                    - WM(X%:X%) where X is between 10 and 90 inclusive.
+                     * WM(X%:X%) where X is between 10 and 90 inclusive.
 
                   For more information about these extended statistics, see CloudWatch statistics
                   definitions (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html).
@@ -284,43 +284,43 @@ spec:
 
                   EC2 actions:
 
-                    - arn:aws:automate:region:ec2:stop
+                     * arn:aws:automate:region:ec2:stop
 
-                    - arn:aws:automate:region:ec2:terminate
+                     * arn:aws:automate:region:ec2:terminate
 
-                    - arn:aws:automate:region:ec2:reboot
+                     * arn:aws:automate:region:ec2:reboot
 
-                    - arn:aws:automate:region:ec2:recover
+                     * arn:aws:automate:region:ec2:recover
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
 
                   Autoscaling action:
 
-                    - arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
+                     * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
 
                   Lambda actions:
 
-                    - Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
+                     * Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
 
-                    - Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
+                     * Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
 
-                    - Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
+                     * Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
 
                   SNS notification action:
 
-                    - arn:aws:sns:region:account-id:sns-topic-name
+                     * arn:aws:sns:region:account-id:sns-topic-name
 
                   SSM integration actions:
 
-                    - arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
+                     * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
 
-                    - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+                     * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
                 items:
                   type: string
                 type: array
@@ -454,43 +454,43 @@ spec:
 
                   EC2 actions:
 
-                    - arn:aws:automate:region:ec2:stop
+                     * arn:aws:automate:region:ec2:stop
 
-                    - arn:aws:automate:region:ec2:terminate
+                     * arn:aws:automate:region:ec2:terminate
 
-                    - arn:aws:automate:region:ec2:reboot
+                     * arn:aws:automate:region:ec2:reboot
 
-                    - arn:aws:automate:region:ec2:recover
+                     * arn:aws:automate:region:ec2:recover
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
 
-                    - arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
+                     * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
 
                   Autoscaling action:
 
-                    - arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
+                     * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
 
                   Lambda actions:
 
-                    - Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
+                     * Invoke the latest version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name
 
-                    - Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
+                     * Invoke a specific version of a Lambda function: arn:aws:lambda:region:account-id:function:function-name:version-number
 
-                    - Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
+                     * Invoke a function by using an alias Lambda function: arn:aws:lambda:region:account-id:function:function-name:alias-name
 
                   SNS notification action:
 
-                    - arn:aws:sns:region:account-id:sns-topic-name
+                     * arn:aws:sns:region:account-id:sns-topic-name
 
                   SSM integration actions:
 
-                    - arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
+                     * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
 
-                    - arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
+                     * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
                 items:
                   type: string
                 type: array

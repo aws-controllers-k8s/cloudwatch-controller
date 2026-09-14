@@ -60,9 +60,9 @@ type MetricStreamSpec struct {
 	// be in the same account as the metric stream. This IAM role must include the
 	// following permissions:
 	//
-	//   - firehose:PutRecord
+	//    * firehose:PutRecord
 	//
-	//   - firehose:PutRecordBatch
+	//    * firehose:PutRecordBatch
 	RoleARN *string                                  `json:"roleARN,omitempty"`
 	RoleRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"roleRef,omitempty"`
 	// By default, a metric stream always sends the MAX, MIN, SUM, and SAMPLECOUNT
