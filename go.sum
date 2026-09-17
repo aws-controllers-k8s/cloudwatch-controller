@@ -4,8 +4,8 @@ github.com/aws-controllers-k8s/firehose-controller v0.5.0 h1:vsHjOF6/Ehxc4lj/1tJ
 github.com/aws-controllers-k8s/firehose-controller v0.5.0/go.mod h1:LrVw+WRv/dSj0/2q/awLuhmLyBcXFjtT9tR5QwqCUZA=
 github.com/aws-controllers-k8s/iam-controller v1.9.0 h1:U3Qn8VMMl5ChxCPhGQvR9O67qONEI7AZYL8b/E2qkwA=
 github.com/aws-controllers-k8s/iam-controller v1.9.0/go.mod h1:/zRo7dH73DS6b/QXbAu5PBvJLSRvRMRcg7hXoVwAqQs=
-github.com/aws-controllers-k8s/runtime v0.63.0 h1:BR8uOwV08AoP5bNS7tlqoLXkSK6E82r7K8fJOuaoVZw=
-github.com/aws-controllers-k8s/runtime v0.63.0/go.mod h1:U0E02HFCvRnLQplApOIeTPDBiRBKXjvyaRhb475bcGs=
+github.com/aws-controllers-k8s/runtime v0.64.0 h1:fWoRgEcMewpcZDqHfu6jIItSRShkF5+er/Xz/B3EAko=
+github.com/aws-controllers-k8s/runtime v0.64.0/go.mod h1:U0E02HFCvRnLQplApOIeTPDBiRBKXjvyaRhb475bcGs=
 github.com/aws/aws-sdk-go-v2 v1.43.0 h1:fharf/WhbRAVZ1du0QL7roNFxZ6T/sWr+4Ni617bwSI=
 github.com/aws/aws-sdk-go-v2 v1.43.0/go.mod h1:5pKeft2eJj+gElQ38Jqg4ibCqh+/AK33/0X3hip7IjM=
 github.com/aws/aws-sdk-go-v2/config v1.28.6 h1:D89IKtGrs/I3QXOLNTH93NJYtDhm8SYa9Q5CsPShmyo=
