@@ -50,7 +50,7 @@ var (
 // +kubebuilder:rbac:groups=cloudwatch.services.k8s.aws,resources=metricalarms,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=cloudwatch.services.k8s.aws,resources=metricalarms/status,verbs=get;update;patch
 
-var lateInitializeFieldNames = []string{}
+var lateInitializeFieldNames = []string{"ActionsEnabled"}
 
 // resourceManager is responsible for providing a consistent way to perform
 // CRUD operations in a backend AWS service API for Book custom resources.
@@ -260,7 +260,12 @@ func (rm *resourceManager) lateInitializeFromReadOneOutput(
 	observed acktypes.AWSResource,
 	latest acktypes.AWSResource,
 ) acktypes.AWSResource {
-	return latest
+	observedKo := rm.concreteResource(observed).ko.DeepCopy()
+	latestKo := rm.concreteResource(latest).ko.DeepCopy()
+	if observedKo.Spec.ActionsEnabled != nil && latestKo.Spec.ActionsEnabled == nil {
+		latestKo.Spec.ActionsEnabled = observedKo.Spec.ActionsEnabled
+	}
+	return &resource{latestKo}
 }
 
 // IsSynced returns true if the resource is synced.
