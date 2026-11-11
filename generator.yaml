@@ -66,6 +66,9 @@ resources:
         is_required: true
       AlarmArn:
         is_arn: true
+      ActionsEnabled:
+        late_initialize:
+          skip_incomplete_check: {}
     renames:
       operations:
         PutMetricAlarm:
